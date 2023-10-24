@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="menuPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="904.0" style="-fx-border-radius: 2%;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DBClientApp.controller.MenuController" onMouseClicked="#onMouseClicked">
+   <children>
+      <Label id="mainMenuLabel" layoutX="28.0" layoutY="28.0" text="Main Menu">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Pane focusTraversable="true" layoutX="24.0" layoutY="60.0" prefHeight="280.0" prefWidth="850.0" style="-fx-border-radius: 2%; -fx-border-color: black;">
+         <children>
+            <Group />
+            <Label layoutX="25.0" layoutY="25.0" text="Appointments">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Label>
+            <TableView fx:id="menuApptTable" depthTest="DISABLE" editable="true" layoutX="15.0" layoutY="60.0" prefHeight="160.0" prefWidth="820.0">
+              <columns>
+                <TableColumn fx:id="apptIDCol" minWidth="-Infinity" prefWidth="70.0" resizable="false" text="Appt. ID" />
+                <TableColumn fx:id="apptTitleCol" minWidth="-Infinity" resizable="false" text="Title" />
+                <TableColumn fx:id="apptDescriptionCol" minWidth="-Infinity" prefWidth="75.0" text="Description" />
+                <TableColumn fx:id="apptLocationCol" minWidth="-Infinity" prefWidth="75.0" resizable="false" text="Location" />
+                <TableColumn fx:id="apptContactCol" minWidth="-Infinity" resizable="false" text="Contact" />
+                <TableColumn fx:id="apptTypeCol" minWidth="-Infinity" prefWidth="100.0" text="Type" />
+                <TableColumn fx:id="apptStartCol" minWidth="-Infinity" prefWidth="100.0" resizable="false" text="Start Info" />
+                <TableColumn fx:id="apptEndCol" minWidth="-Infinity" prefWidth="100.0" resizable="false" text="End Info" />
+                <TableColumn fx:id="apptCustIDCol" minWidth="-Infinity" prefWidth="70.0" resizable="false" text="Cust. ID" />
+                <TableColumn fx:id="apptUserIDCol" minWidth="-Infinity" prefWidth="70.0" resizable="false" text="User ID" />
+              </columns>
+            </TableView>
+            <HBox alignment="CENTER" layoutX="428.0" layoutY="17.0" prefHeight="34.0" prefWidth="400.0" spacing="30.0">
+               <children>
+                  <RadioButton fx:id="menuCurrentAppointments" mnemonicParsing="false" onAction="#menuRadioCurrent" text="Current Week">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="menuAppointmentType" />
+                     </toggleGroup></RadioButton>
+                  <RadioButton fx:id="menuMonthAppointments" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#menuRadioMonth" text="Current Month" toggleGroup="$menuAppointmentType" />
+                  <RadioButton fx:id="menuAllAppointments" layoutX="98.0" layoutY="10.0" mnemonicParsing="false" onAction="#menuRadioAll" selected="true" text="All Appointments" toggleGroup="$menuAppointmentType" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="271.0" layoutY="231.0" prefHeight="35.0" prefWidth="300.0" spacing="25.0">
+               <children>
+                  <Button fx:id="menuApptAddBtn" alignment="CENTER" mnemonicParsing="false" onAction="#menuApptAddClick" prefWidth="100.0" text="Add" />
+                  <Button fx:id="menuApptUpdateBtn" alignment="CENTER" mnemonicParsing="false" onAction="#menuApptUpdateClick" prefWidth="100.0" text="Update" />
+                  <Button fx:id="menuApptDeleteBtn" alignment="CENTER" mnemonicParsing="false" onAction="#menuApptDeleteClick" prefWidth="100.0" text="Delete" />
+               </children>
+            </HBox>
+         </children>
+         <rotationAxis>
+            <Point3D />
+         </rotationAxis>
+      </Pane>
+      <Pane focusTraversable="true" layoutX="24.0" layoutY="350.0" prefHeight="280.0" prefWidth="850.0" style="-fx-border-radius: 2%; -fx-border-color: black;">
+         <children>
+            <HBox alignment="CENTER" layoutX="275.0" layoutY="231.0" prefHeight="35.0" prefWidth="300.0" spacing="25.0">
+               <children>
+                  <Button fx:id="menuCustAddBtn" alignment="CENTER" mnemonicParsing="false" onAction="#menuCustAddClick" prefWidth="100.0" text="Add" />
+                  <Button fx:id="menuCustUpdateBtn" alignment="CENTER" mnemonicParsing="false" onAction="#menuCustUpdateClick" prefWidth="100.0" text="Update" />
+                  <Button fx:id="menuCustDeleteBtn" alignment="CENTER" mnemonicParsing="false" onAction="#menuCustDeleteClick" prefWidth="100.0" text="Delete" />
+               </children>
+            </HBox>
+            <Group />
+            <Label layoutX="25.0" layoutY="25.0" prefHeight="20.0" prefWidth="100.0" text="Customers">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <TableView fx:id="menuCustTable" depthTest="DISABLE" editable="true" layoutX="15.0" layoutY="60.0" prefHeight="160.0" prefWidth="820.0">
+               <columns>
+                  <TableColumn fx:id="custIDCol" minWidth="-Infinity" prefWidth="70.0" text="Cust. ID" />
+                  <TableColumn fx:id="custNameCol" minWidth="-Infinity" prefWidth="150.0" text="Name" />
+                  <TableColumn fx:id="custAddressCol" minWidth="-Infinity" prefWidth="225.0" text="Address" />
+                  <TableColumn fx:id="custPostalCodeCol" minWidth="-Infinity" prefWidth="100.0" text="Postal Code" />
+                  <TableColumn fx:id="custPhoneCol" minWidth="-Infinity" prefWidth="125.0" text="Phone" />
+                  <TableColumn fx:id="custCountryCol" minWidth="-Infinity" prefWidth="150.0" text="Country" />
+               </columns>
+            </TableView>
+         </children>
+      </Pane>
+      <HBox alignment="CENTER" layoutX="674.0" layoutY="23.0" prefHeight="30.0" prefWidth="200.0" spacing="5.0">
+         <children>
+            <Button fx:id="menuLogoutBtn" mnemonicParsing="false" onAction="#menuLogoutClick" prefHeight="25.0" prefWidth="100.0" style="-fx-background-radius: 2%; -fx-border-color: black; -fx-border-radius: 2%;" text="Logout">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
+            <Button fx:id="menuReportsBtn" mnemonicParsing="false" onAction="#menuReportClick" prefHeight="25.0" prefWidth="100.0" style="-fx-background-radius: 2%; -fx-border-color: black; -fx-border-radius: 2%;" text="Reports" />
+         </children>
+      </HBox>
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</AnchorPane>

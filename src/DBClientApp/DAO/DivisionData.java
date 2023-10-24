@@ -1,0 +1,107 @@
+package DBClientApp.DAO;
+
+import DBClientApp.controller.AddCustomerController;
+import DBClientApp.helper.JDBC;
+import DBClientApp.model.Country;
+import DBClientApp.model.FirstLevelDivision;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class DivisionData {
+
+    public static ObservableList<FirstLevelDivision> getTheseDivisions(int countryID) {
+        ObservableList<FirstLevelDivision> divisionListDAO = FXCollections.observableArrayList();
+
+        try {
+            String sql = """
+                    SELECT *
+                    FROM first_level_divisions fld
+                    INNER JOIN countries c ON fld.Country_ID = c.Country_ID
+                    WHERE c.Country_ID =
+                    ?
+                    ORDER BY fld.Division asc;
+                    """;
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, countryID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String divisionName = rs.getString("fld.Division");
+                FirstLevelDivision newDivision = new FirstLevelDivision(divisionName);
+                divisionListDAO.add(newDivision);
+            }
+        } catch(SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return divisionListDAO;
+    }
+
+    public static ObservableList<FirstLevelDivision> getDivisions() {
+        ObservableList<FirstLevelDivision> divisionListDAO = FXCollections.observableArrayList();
+
+        try {
+            String sql = """
+                    SELECT *
+                    FROM first_level_divisions fld
+                    INNER JOIN countries c ON fld.Country_ID = c.Country_ID
+                    ORDER BY fld.Division asc;
+                    """;
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String divisionName = rs.getString("fld.Division");
+                FirstLevelDivision newDivision = new FirstLevelDivision(divisionName);
+                divisionListDAO.add(newDivision);
+            }
+        } catch(SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return divisionListDAO;
+    }
+
+    public static int getDivisionID(String divisionName) {
+
+        int divisionID = 0;
+        try {
+            String sql = """
+                    SELECT *
+                    FROM first_level_divisions
+                    WHERE Division LIKE
+                    ?;
+                    """;
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setString(1, divisionName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                divisionID = rs.getInt("Division_ID");
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return divisionID;
+    }
+
+    public static String getDivisionName(int divisionID) {
+        String divisionName = null;
+        try {
+            String sql = """
+                    SELECT Division
+                    FROM first_level_divisions
+                    WHERE Division_ID =
+                    ?;
+                    """;
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, divisionID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                divisionName = rs.getString("Division");
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return divisionName;
+    }
+}

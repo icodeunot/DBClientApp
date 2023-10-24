@@ -1,7 +1,8 @@
-package helper;
+package DBClientApp.helper;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public abstract class JDBC {
     private static final String protocol = "jdbc";
@@ -14,17 +15,23 @@ public abstract class JDBC {
     private static String password = "Passw0rd!"; // Password
     public static Connection connection;  // Connection Interface
 
-    public static void openConnection()
-    {
+    public static Connection openConnection() {
         try {
             Class.forName(driver); // Locate Driver
             connection = DriverManager.getConnection(jdbcUrl, userName, password); // Reference Connection object
             System.out.println("Connection successful!");
         }
-        catch(Exception e)
-        {
-            System.out.println("Error:" + e.getMessage());
+        catch(SQLException e) {
+            e.printStackTrace(); // System.out.println("Error:" + e.getMessage());
         }
+        catch(ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return connection;
+    }
+
+    public static Connection getConnection() {
+        return connection;
     }
 
     public static void closeConnection() {
@@ -34,7 +41,8 @@ public abstract class JDBC {
         }
         catch(Exception e)
         {
-            System.out.println("Error:" + e.getMessage());
+           //Let it close // System.out.println("Error:" + e.getMessage());
         }
     }
+
 }
