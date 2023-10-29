@@ -1,5 +1,6 @@
 package DBClientApp.controller;
 
+import DBClientApp.DAO.AppointmentData;
 import DBClientApp.DAO.ContactData;
 import DBClientApp.DAO.CustomerData;
 import DBClientApp.DAO.UserData;
@@ -21,6 +22,7 @@ import javafx.fxml.FXML;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -40,11 +42,16 @@ public class UpdateAppointmentController implements Initializable {
     ZonedDateTime myHourStart = est2systemStart.withZoneSameInstant(userTime);
 
     // Time block to handle cases where an appointment begins today.
-    int minute = LocalTime.now().getMinute();
-    int getTimeToAdd = minute % 5;
+    public int startMinute() {
+        int minute = LocalTime.now().getMinute();
+        minute = (minute >= 0 && minute <= 59) ? minute : 0;
+        int getTimeToAdd = minute % 5;
+        int startMin = minute + (getTimeToAdd > 0 ? 5 - getTimeToAdd : 0);
+        startMin = (startMin >= 0 && startMin <= 59) ? startMin : 0;
+        return startMin;
+    }
     int hour = LocalTime.now().getHour();
-    int startMin = minute + (getTimeToAdd > 0 ? 5 - getTimeToAdd : 0);
-    ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMin), ZoneId.of(String.valueOf(userTime)));
+    ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMinute()), ZoneId.of(String.valueOf(userTime)));
     ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
 
     // End
@@ -88,9 +95,11 @@ public class UpdateAppointmentController implements Initializable {
     }
     @FXML
     void updateApptApptIDClick(ActionEvent event) {
+        validateForm();
     }
     @FXML
     void updateApptCancelClick(ActionEvent event) throws IOException {
+        alert(8);
         stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
         scene = new Scene(FXMLLoader.load(getClass().getResource("/DBClientApp/view/Menu.fxml")));
         stage.setTitle("Main Menu");
@@ -100,12 +109,15 @@ public class UpdateAppointmentController implements Initializable {
     }
     @FXML
     void updateApptContactClick(ActionEvent event) {
+        validateForm();
     }
     @FXML
     void updateApptCustIDClick(ActionEvent event) {
+        validateForm();
     }
     @FXML
     void updateApptDescriptionClick(ActionEvent event) {
+        validateForm();
     }
     @FXML
     void updateApptEDateClick(ActionEvent event) {
@@ -119,6 +131,9 @@ public class UpdateAppointmentController implements Initializable {
         int startMin;
 
         startMin = minute + (getTimeToAdd > 0 ? 5 - getTimeToAdd : 0);
+        if (startMin >= 60) {
+            startMin = 0;
+        }
 
         ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMin), ZoneId.of(String.valueOf(userTime)));
         ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
@@ -152,11 +167,18 @@ public class UpdateAppointmentController implements Initializable {
             }
             // set the time combo box with a successful start date.
             else {
-                if (updateApptEDateCal.getValue().equals(LocalDate.now()) && updateApptSDateCal.getValue() != null) {
+                if (updateApptEDateCal.getValue().equals(LocalDate.now()) && updateApptSDateCal.getValue() != null && updateApptSTimeCombo.getValue() != null && updateApptSDateCal.getValue().equals(LocalDate.now())) {
                     updateApptETimeCombo.getItems().clear();
-                    // updateApptSTimeCombo.setValue(null);
-                    LocalTime endStart = todayHourStart.toLocalTime();
-                    while (endStart.isBefore(myHourEnd.toLocalTime().minusMinutes(5).plusSeconds(1))) {
+                    LocalTime endStart = updateApptSTimeCombo.getValue().plusMinutes(5);//todayHourStart.toLocalTime();
+                    while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                        updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
+                        endStart = endStart.plusMinutes(5);
+                    }
+                }
+                else if (updateApptEDateCal.getValue().equals(LocalDate.now())) {
+                    updateApptETimeCombo.getItems().clear();
+                    LocalTime endStart = todayHourStart.toLocalTime().plusMinutes(5);
+                    while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
                         updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
                         endStart = endStart.plusMinutes(5);
                     }
@@ -164,7 +186,7 @@ public class UpdateAppointmentController implements Initializable {
                 else {
                     updateApptETimeCombo.getItems().clear();
                     LocalTime endStart = myHourStart.toLocalTime();
-                    while (endStart.isBefore(myHourEnd.toLocalTime().minusMinutes(5).plusSeconds(1))) {
+                    while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
                         updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
                         endStart = endStart.plusMinutes(5);
                     }
@@ -172,95 +194,43 @@ public class UpdateAppointmentController implements Initializable {
             }
             updateApptETimeCombo.setPromptText("Select please...");
         }
-
-        // check for null date and then for the end date chosen. Can't be historical and if it starts today, the start time will have to be after the current time.
-//        if ((updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue() != null) && updateApptEDateCal.getValue().equals(LocalDate.now()) && todayHourStart.isAfter(myHourEnd)) {
-//            updateApptETimeCombo.setValue(null);
-//            alert(6);
-//        }
-//        else if ((updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue() != null) && updateApptEDateCal.getValue().isBefore(LocalDate.now())) {
-//            updateApptETimeCombo.getItems().clear();
-//            updateApptETimeCombo.setValue(null);
-//            alert(1);
-//        }
-//        else if ((updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue() != null) && updateApptEDateCal.getValue().equals(LocalDate.now())) {
-//            updateApptETimeCombo.getItems().clear();
-//            LocalTime endStart = todayHourStart.toLocalTime().plusMinutes(5);
-//            while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
-//                updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
-//                endStart = endStart.plusMinutes(5);
-//            }
-//            // updateApptETimeCombo.setDisable(false);
-//        }
-//        else {
-//            updateApptETimeCombo.getItems().clear();
-//            LocalTime endStart = myHourStart.toLocalTime();
-//            while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
-//                updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
-//                endStart = endStart.plusMinutes(5);
-//            }
-//            // updateApptETimeCombo.setDisable(false);
-//        }
-//        updateApptEDateCal.setValue(updateApptSDateCal.getValue());
-//    }
-        //        LocalDate endDate = updateApptEDateCal.getValue();
-//        LocalDate startDate = updateApptSDateCal.getValue();
-//        if (endDate != null && startDate != null && endDate.isBefore(startDate)) {
-//            updateApptEDateCal.setValue(updateApptSDateCal.getValue());
-//            alert(3);
-//        }
-//        else if (endDate != null && startDate != null && endDate.isAfter(startDate)) {
-//            LocalTime apptStart = myHourStart.toLocalTime();
-//            while (apptStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
-//                updateApptETimeCombo.getItems().add(LocalTime.from(apptStart));
-//                apptStart = apptStart.plusMinutes(5);
-//            }
-//            updateApptETimeCombo.setValue(null);
-//        }
+        validateForm();
     }
     @FXML
     void updateApptETimeClick(ActionEvent event) {
-    //    // need to check for updated time first
-    //    if (updateApptSTimeCombo.getSelectionModel().getSelectedItem() != null) {
-    //        if (updateApptEDateCal.getValue() != null && updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue().isEqual(updateApptSDateCal.getValue())) {
-    //            // End date before start date
-    //            updateApptETimeCombo.getItems().clear();
-    //            alert(3);
-    //        } else if (updateApptEDateCal.getValue() != null && updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue().isEqual(updateApptSDateCal.getValue())) {
-    //            // Start/End Date the same
-    //            updateApptETimeCombo.getItems().clear();
-    //            LocalTime apptStart = updateApptSTimeCombo.getSelectionModel().getSelectedItem().plusMinutes(5);
-    //            System.out.println(apptStart + ",- apptStart");
-    //            while (apptStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
-    //                updateApptETimeCombo.getItems().add(LocalTime.from(apptStart));
-    //                apptStart = apptStart.plusMinutes(5);
-    //            }
-    //        } else {
-    //            // End Date after Start Date
-    //            updateApptETimeCombo.getItems().clear();
-    //            LocalTime apptStart = myHourStart.toLocalTime();
-    //            while (apptStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
-    //                updateApptETimeCombo.getItems().add(LocalTime.from(apptStart));
-    //                apptStart = apptStart.plusMinutes(5);
-    //            }
-    //        }
-    //    }
+        if (updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue() != null && updateApptSDateCal.getValue().equals(updateApptEDateCal.getValue())) {
+            if (updateApptSTimeCombo.getSelectionModel().getSelectedItem() != null) {
+                LocalTime endStart = updateApptSTimeCombo.getSelectionModel().getSelectedItem().plusMinutes(5);
+                while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                    updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
+                    endStart = endStart.plusMinutes(5);
+                }
+            }
+            else {
+                LocalTime localOpen = myHourStart.toLocalTime().plusMinutes(5);
+                while (localOpen.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                    updateApptETimeCombo.getItems().add(LocalTime.from(localOpen));
+                    localOpen = localOpen.plusMinutes(5);
+                }
+            }
+        }
+        validateForm();
     }
     @FXML
     void updateApptLocationClick(ActionEvent event) {
+        validateForm();
     }
     @FXML
     void updateApptSDateClick(ActionEvent event) {
         // get this method's instance of the conversion.
         int minute = LocalTime.now().getMinute();
-        if (minute == 0) {
-            minute = 0;
-        }
+        minute = (minute >= 0 && minute <= 59) ? minute : 0;
         int getTimeToAdd = minute % 5;
         int hour = LocalTime.now().getHour();
         int startMin;
 
         startMin = minute + (getTimeToAdd > 0 ? 5 - getTimeToAdd : 0);
+        startMin = (startMin >= 0 && startMin <= 59) ? startMin : 0;
 
         ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMin), ZoneId.of(String.valueOf(userTime)));
         ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
@@ -270,7 +240,7 @@ public class UpdateAppointmentController implements Initializable {
             if (updateApptSDateCal.getValue().isBefore(LocalDate.now())) {
                 updateApptSDateCal.setValue(null);
                 updateApptSDateCal.setPromptText("Select please...");
-                updateApptSTimeCombo.setValue(null);
+                // updateApptSTimeCombo.setValue(null);
                 updateApptSTimeCombo.setPromptText("Select please...");
                 alert(1);
                 updateApptPane.requestFocus();
@@ -312,47 +282,112 @@ public class UpdateAppointmentController implements Initializable {
                     }
                 }
             }
-            updateApptSTimeCombo.setPromptText("Select please...");
         }
+        validateForm();
     }
     @FXML
     void updateApptSTimeClick(ActionEvent event) {
-    //    LocalDate startDate = updateApptSDateCal.getValue();
-    //    if (startDate != null && startDate.equals(LocalDate.now())) {
-    //        updateApptSTimeCombo.getItems().clear();
-    //        System.out.println("MAde it to first if");
-    //        updateApptSTimeCombo.getItems().clear();
-    //        LocalTime localOpen = LocalTime.now();
-    //        int minute = localOpen.getMinute();
-    //        int timeToAdd = 5 - (minute % 10); // How many minutes to the next 5 minute mark?
-    //        LocalTime todayStartTime = localOpen.plusMinutes(timeToAdd);
-    //        ZonedDateTime todayStart = ZonedDateTime.of(startDate, LocalTime.of(todayStartTime.getHour(), 0), ZoneId.of("America/New_York"));
-    //        ZonedDateTime newHourStart = todayStart.withZoneSameInstant(userTime);
-    //        while (newHourStart.isBefore(myHourEnd.minusMinutes(5).plusSeconds(1))) {
-    //            updateApptSTimeCombo.getItems().add(LocalTime.from(newHourStart));
-    //            newHourStart = newHourStart.plusMinutes(5);
-    //        }
-    //    }
-    //    else if (startDate != null && updateApptEDateCal.getValue().isAfter(startDate)) {
-    //        updateApptSTimeCombo.getItems().clear();
-    //        LocalTime localOpen = myHourStart.toLocalTime();
-    //        while(localOpen.isBefore(myHourEnd.toLocalTime().minusMinutes(5).plusSeconds(1))) {
-    //            updateApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
-    //            localOpen = localOpen.plusMinutes(5);
-    //        }
-    //    }
+        if (updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue() != null && updateApptSDateCal.getValue().equals(updateApptEDateCal.getValue())) {
+            // updateApptSTimeCombo.getItems().clear();
+            if (updateApptSTimeCombo.getSelectionModel().getSelectedItem() != null) {
+                updateApptETimeCombo.getItems().clear();
+                LocalTime endStart = updateApptSTimeCombo.getSelectionModel().getSelectedItem().plusMinutes(5);
+                while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                    updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
+                    endStart = endStart.plusMinutes(5);
+                }
+            }
+            else {
+                updateApptETimeCombo.getItems().clear();
+                LocalTime localOpen = myHourStart.toLocalTime().plusMinutes(5);
+                while (localOpen.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                    updateApptETimeCombo.getItems().add(LocalTime.from(localOpen));
+                    localOpen = localOpen.plusMinutes(5);
+                }
+            }
+        }
+        validateForm();
     }
     @FXML
     void updateApptSaveClick(ActionEvent event) {
+        ObservableList<Appointment> apptList = AppointmentData.getAllApps();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String thisStart = updateApptSDateCal.getValue() + " " + updateApptSTimeCombo.getSelectionModel().getSelectedItem();
+        String thisEnd = updateApptEDateCal.getValue() + " " + updateApptETimeCombo.getSelectionModel().getSelectedItem();
+        LocalDateTime thisStartDateTime = LocalDateTime.parse(thisStart, dateFormat);
+        LocalDateTime thisEndDateTime = LocalDateTime.parse(thisEnd, dateFormat);
+
+        ObservableList<Appointment> customerAppts = FXCollections.observableArrayList();
+        for (Appointment a : apptList) {
+            if (a.getCustomerID() == updateApptCustIDCombo.getSelectionModel().getSelectedItem()) {
+                customerAppts.add(a);
+            }
+            for (Appointment appt : customerAppts) {
+                LocalDateTime custStarts = LocalDateTime.parse(appt.getStart(), dateFormat);
+                LocalDateTime custEnds = LocalDateTime.parse(appt.getEnd(), dateFormat);
+                if (thisStartDateTime.equals(custStarts)) {
+                    alert(9);
+                    return;
+                }
+                else if (thisStartDateTime.isAfter(custStarts) && thisStartDateTime.isBefore(custEnds)) {
+                    alert(9);
+                    return;
+                }
+                else if (thisStartDateTime.isBefore(custStarts) && thisEndDateTime.isAfter(custStarts)) {
+                    alert(9);
+                    return;
+                }
+                else if (thisStartDateTime.isAfter(custStarts) && thisEndDateTime.isBefore(custEnds)) {
+                    alert(9);
+                    return;
+                }
+            }
+        }
+        try {
+            Integer appointmentID = Integer.valueOf(updateApptApptIDTxt.getText());
+            String title = updateApptTitleTxt.getText();
+            String description = updateApptDescriptionTxt.getText();
+            String location = updateApptLocationTxt.getText();
+            String type = updateApptTypeTxt.getText();
+            // make a timestamp from the selections
+            LocalDateTime apptStartDate = LocalDateTime.of(updateApptSDateCal.getValue(), updateApptSTimeCombo.getSelectionModel().getSelectedItem());
+            LocalDateTime apptEndDate = LocalDateTime.of(updateApptEDateCal.getValue(), updateApptETimeCombo.getSelectionModel().getSelectedItem());
+            Timestamp startTS = Timestamp.valueOf(apptStartDate);
+            Timestamp endTS = Timestamp.valueOf(apptEndDate);
+            int custID = updateApptCustIDCombo.getSelectionModel().getSelectedItem();
+            int userID = updateApptUserIDCombo.getSelectionModel().getSelectedItem();
+            int contactID = updateApptContactCombo.getSelectionModel().getSelectedItem().getContactID();
+            Timestamp emptyTS = Timestamp.valueOf("1970-01-01 00:00:00");
+            if (title.isEmpty() || description.isEmpty() || location.isEmpty() || type.isEmpty() || startTS.equals(emptyTS) ||
+                    endTS.equals(emptyTS)) {
+                alert(4);
+            }
+            else {
+                AppointmentData.updateAppointment(title, description, location, type, startTS, endTS, custID, userID, contactID, appointmentID);
+                alert(5);
+                stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
+                scene = new Scene(FXMLLoader.load(getClass().getResource("/DBClientApp/view/Menu.fxml")));
+                stage.setTitle("Main Menu");
+                stage.setScene(scene);
+                stage.centerOnScreen();
+                stage.show();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     @FXML
     void updateApptTitleClick(ActionEvent event) {
+        validateForm();
     }
     @FXML
     void updateApptTypeClick(ActionEvent event) {
+        validateForm();
     }
     @FXML
     void updateApptUserIDClick(ActionEvent event) {
+        validateForm();
     }
 
     private void alert(int alertNum) {
@@ -410,27 +445,71 @@ public class UpdateAppointmentController implements Initializable {
                 updateApptSTimeCombo.setValue(null);
                 updateApptSTimeCombo.setPromptText("Select please...");
             }
+            case 8 -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("D'oh!");
+                alert.setHeaderText("No Updates Made");
+                alert.setContentText("Appointment # " + updateApptApptIDTxt.getText() + " has not been updated in the database!");
+                alert.showAndWait();
+            }
+            case 9 -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("D'oh!");
+                alert.setHeaderText("So this is what it's like when appointments collide.");
+                alert.setContentText("Your chosen appointment time overlaps with another appointment for this customer. Please pick another time.");
+                alert.showAndWait();
+            }
         }
+    }
+
+    private void validateForm() {
+        boolean formValidated = true;
+        if (updateApptTitleTxt.getText().isEmpty() ||
+                updateApptDescriptionTxt.getText().isEmpty() ||
+                updateApptLocationTxt.getText().isEmpty() ||
+                updateApptTypeTxt.getText().isEmpty() ||
+                updateApptSDateCal.getValue() == null ||
+                updateApptEDateCal.getValue() == null ||
+                updateApptSTimeCombo.getSelectionModel().isEmpty() ||
+                updateApptETimeCombo.getSelectionModel().isEmpty() ||
+                updateApptContactCombo.getSelectionModel().isEmpty() ||
+                updateApptCustIDCombo.getSelectionModel().isEmpty() ||
+                updateApptUserIDCombo.getSelectionModel().isEmpty()) {
+                formValidated = false;
+        }
+        else if (updateApptSDateCal.getValue().equals(updateApptEDateCal.getValue())) {
+            if (updateApptSDateCal.getValue().isAfter(updateApptEDateCal.getValue()) || updateApptSTimeCombo.getValue().isAfter(updateApptETimeCombo.getValue())) {
+                formValidated = false;
+                alert(3);
+            }
+        }
+        updateApptSaveBtn.setDisable(!formValidated);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        updateApptSaveBtn.setDisable(true);
         System.out.println("Update Appointment Controller Launched");
         // Data the controller will need
+        // Get system timezone
+        ZoneId userTime = ZoneId.systemDefault();
+        // Get the times converted for combobox insertion
+        // Start
+        ZonedDateTime est2systemStart = ZonedDateTime.of(LocalDate.now(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
+        ZonedDateTime myHourStart = est2systemStart.withZoneSameInstant(userTime);
+        // Time block to handle cases where an appointment begins today.
+        int minute = LocalTime.now().getMinute();
+        minute = (minute >= 0 && minute <= 59) ? minute : 0;
+        int getTimeToAdd = minute % 5;
+        int hour = LocalTime.now().getHour();
+        int startMin = minute + (getTimeToAdd > 0 ? 5 - getTimeToAdd : 0);
+        startMin = (startMin >= 0 && startMin <= 59) ? startMin : 0;
+        ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMin), ZoneId.of(String.valueOf(userTime)));
+        ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
+        // End
+        ZonedDateTime est2systemEnd = ZonedDateTime.of(LocalDate.now(), LocalTime.of(22, 0), ZoneId.of("America/New_York"));
+        ZonedDateTime myHourEnd = est2systemEnd.withZoneSameInstant(userTime);
         chosenAppointment = MenuController.chooseYourAppointment();
-        if (minute == 0) {
-            minute = 0;
-        }
-        System.out.println("Minute -> " + minute);
-        // Start Time Combo Box
-        updateApptSTimeCombo.getItems().clear();
-        LocalTime localOpen = myHourStart.toLocalTime();
-        while(localOpen.isBefore(myHourEnd.toLocalTime().minusMinutes(5).plusSeconds(1))) {
-            updateApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
-            localOpen = localOpen.plusMinutes(5);
-        }
-        // End Time Combo Box
-
         // Contact Names
         ObservableList<Contact> contacts = ContactData.getContact();
         for (Contact c : contacts) {
@@ -452,7 +531,6 @@ public class UpdateAppointmentController implements Initializable {
             int userID = u.getUserID();
             userIDs.add(userID);
         }
-
         // get date and time ready for initial pull from appointment data
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime startInfo = LocalDateTime.parse(chosenAppointment.getStart(), dateFormat);
@@ -461,6 +539,71 @@ public class UpdateAppointmentController implements Initializable {
         LocalDateTime endInfo = LocalDateTime.parse(chosenAppointment.getEnd(), dateFormat);
         LocalDate endDate = endInfo.toLocalDate();
         LocalTime endTime = endInfo.toLocalTime();
+        // Start Time Combo Box
+        if (startDate.equals(LocalDate.now())) {
+            if (todayHourStart.isAfter(myHourEnd)) {
+                LocalTime localOpen = myHourStart.toLocalTime();
+                while (localOpen.isBefore(myHourEnd.toLocalTime().minusMinutes(5).plusSeconds(1))) {
+                    updateApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
+                    localOpen = localOpen.plusMinutes(5);
+                }
+            }
+            else if (todayHourStart.isBefore(myHourStart)) {
+                LocalTime localOpen = myHourStart.toLocalTime();
+                while (localOpen.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                    updateApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
+                    localOpen = localOpen.plusMinutes(5);
+                }
+            }
+            else {
+                updateApptSTimeCombo.getItems().clear();
+                LocalTime localOpen = todayHourStart.toLocalTime();
+                while (localOpen.isBefore(myHourEnd.toLocalTime().minusMinutes(5).plusSeconds(1))) {
+                    updateApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
+                    localOpen = localOpen.plusMinutes(5);
+                }
+            }
+        }
+        else {
+            LocalTime localOpen = myHourStart.toLocalTime();
+            while (localOpen.isBefore(myHourEnd.toLocalTime().minusMinutes(5).plusSeconds(1))) {
+                updateApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
+                localOpen = localOpen.plusMinutes(5);
+            }
+        }
+
+        // End Time Combo Box
+        if (endDate.equals(LocalDate.now())) {
+            if (todayHourStart.isAfter(myHourEnd)) {
+                LocalTime endStart = myHourStart.toLocalTime().plusMinutes(5);
+                while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                    updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
+                    endStart = endStart.plusMinutes(5);
+                }
+            }
+            else if (todayHourStart.isBefore(myHourStart)) {
+                LocalTime endStart = myHourStart.toLocalTime().plusMinutes(5);
+                while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                    updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
+                    endStart = endStart.plusMinutes(5);
+                }
+            }
+            else {
+                updateApptETimeCombo.getItems().clear();
+                LocalTime endStart = todayHourStart.toLocalTime().plusMinutes(5);
+                while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                    updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
+                    endStart = endStart.plusMinutes(5);
+                }
+            }
+        }
+        else {
+            LocalTime endStart = myHourStart.toLocalTime().plusMinutes(5);
+            while (endStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
+                updateApptETimeCombo.getItems().add(LocalTime.from(endStart));
+                endStart = endStart.plusMinutes(5);
+            }
+        }
         // assign text values
         updateApptApptIDTxt.setText(String.valueOf(chosenAppointment.getAppointmentID()));
         updateApptTitleTxt.setText(chosenAppointment.getTitle());
@@ -471,11 +614,6 @@ public class UpdateAppointmentController implements Initializable {
         updateApptSDateCal.setValue(startDate);
         updateApptEDateCal.setValue(endDate);
         updateApptSTimeCombo.setValue(startTime);
-        // LocalTime apptStart = updateApptSTimeCombo.getSelectionModel().getSelectedItem().plusMinutes(5);
-        // while (apptStart.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
-        //     updateApptETimeCombo.getItems().add(LocalTime.from(apptStart));
-        //     apptStart = apptStart.plusMinutes(5);
-        // }
         updateApptETimeCombo.setValue(endTime);
         // Create lists: Contacts, Customers, Users - assign original appt values.
         updateApptContactCombo.setItems(contacts);
@@ -483,8 +621,8 @@ public class UpdateAppointmentController implements Initializable {
         updateApptCustIDCombo.setItems(customerIDs);
         updateApptCustIDCombo.setValue(chosenAppointment.getCustomerID());
         updateApptUserIDCombo.setItems(userIDs);
-        updateApptUserIDCombo.setValue(chosenAppointment.getAppointmentID());
-
+        updateApptUserIDCombo.setValue(chosenAppointment.getUserID());
+        // Check to see if the appointment has details that have already passed
         if ((startDate.isBefore(LocalDate.now()) || (startDate.equals(LocalDate.now()) && (startTime.isBefore(LocalTime.from(todayHourStart)) || startTime.isAfter(LocalTime.from(myHourEnd))))
         || startDate.isAfter(endDate)) || (startDate.equals(endDate) && startTime.isAfter(updateApptETimeCombo.getSelectionModel().getSelectedItem()))) {
             alert(7);
@@ -495,11 +633,5 @@ public class UpdateAppointmentController implements Initializable {
                 updateApptETimeCombo.setPromptText("Select please...");
             }
         }
-
-        //else if (startDate.equals(LocalDate.now())) {
-        //    if (startTime.isAfter(LocalTime.from(myHourEnd))) {
-        //        alert(7);
-        //    }
-        //}
     }
 }

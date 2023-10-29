@@ -49,6 +49,7 @@ public class CustomerData {
         return custListDAO;
     }
 
+
     public static int insertCustomer(String customerName, String address, String postalCode, String phone,
                                      String createdBy, String lastUpdatedBy, int divisionID) throws SQLException {
         String sql = "INSERT INTO CUSTOMERS (Customer_Name, Address, Postal_Code, Phone, Created_By, Last_Updated_By, Division_ID) VALUES(?, ?, ?, ?, ?, ?, ?)";

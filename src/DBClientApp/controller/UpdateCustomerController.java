@@ -183,7 +183,8 @@ public class UpdateCustomerController implements Initializable {
     }
 
     /**
-     *  Insert the lambda info here for the javadoc, for loop for specific divisions ******************>>>><><><></></></>
+     *  Lambda Expression #1 (Line 207 - 211) gets all countries and assigns the Main Menu's selected customer's country to the combobox for updating.
+     *  Lambda Expression #2 (Line 227 - 231) takes divisions that have been separated per the selected customer's country, then assigns the combobox appropriately for updating.
      * @param url
      * @param resourceBundle
      */
@@ -202,11 +203,12 @@ public class UpdateCustomerController implements Initializable {
         updateCustPhoneTxt.setText(chosenCustomer.getPhone());
         updateCustCountryCombo.setItems(countries);
         updateCustDivisionCombo.setItems(divisions);
-        for (Country c : countries) {
+        // Lambda expression #1 takes the countries and assigns the country to the combo box based on the selected customer from the menu screen.
+        countries.forEach(c->{
             if (c.getCountryName().equals(chosenCustomer.getCountryName())) {
                 updateCustCountryCombo.setValue(c);
             }
-        }
+        });
         // set the division label and division combo box selections
         int countryID = updateCustCountryCombo.getSelectionModel().getSelectedItem().getCountryID();
         ObservableList<FirstLevelDivision> theseDivisions;
@@ -218,16 +220,15 @@ public class UpdateCustomerController implements Initializable {
                 theseDivisions = DivisionData.getTheseDivisions(countryID);
                 updateCustDivisionCombo.setDisable(false);
                 updateCustDivisionCombo.setItems(theseDivisions);
+
+                // Lambda expression #2 takes "theseDivisions", which are the first level divisions of a selected country.
+                // The divisions are compared against the division name of the chosen customer string above (line 197).
+                // The combo box item is then set to the selected customer's division.
                 theseDivisions.forEach(f->{
                     if (f.getDivision().equals(divisionName)) {
                         updateCustDivisionCombo.setValue(f);
                     }
                 });
-                // for (FirstLevelDivision f : theseDivisions) {
-                //     if (f.getDivision().equals(divisionName)) {
-                //         updateCustDivisionCombo.setValue(f);
-                //     }
-                // }
             }
             case 2 -> {
                 divisionLabel.setText("Province | Country");

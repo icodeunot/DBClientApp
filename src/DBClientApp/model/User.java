@@ -17,14 +17,10 @@ public class User {
         this.userName = userName;
     }
 
-    public User(int userID, String userName, String password, Date createDate, String createdBy, Timestamp lastUpdate, String lastUpdatedBy) {
+    public User(String userName, int userID, String password) {
         this.userID = userID;
         this.userName = userName;
         this.password = password;
-        this.createDate = createDate;
-        this.createdBy = createdBy;
-        this.lastUpdate = lastUpdate;
-        this.lastUpdatedBy = lastUpdatedBy;
     }
 
     public void setUserID(int userID) {

@@ -1,0 +1,18 @@
+Failed login attempt caused by Password error, by username: test at 2023-10-28 15:50:31.729886
+Failed login attempt caused by Password error, by username: test at 2023-10-28 15:57:58.0362477
+Failed login attempt caused by Password error, by username: admin at 2023-10-28 15:58:04.0730463
+Failed login attempt caused by UserName error, by username: john at 2023-10-28 15:58:08.1900754
+Successful login attempt by: test at 2023-10-28 15:58:12.1826652
+Failed login attempt caused by Password error, by username: test at 2023-10-28 16:16:52.529078
+Failed login attempt caused by Password error, by username: test at 2023-10-28 16:25:49.6492754
+Failed login attempt caused by UserName error, by username: john at 2023-10-28 16:25:57.8087134
+Failed login attempt caused by Password error, by username: test at 2023-10-28 16:26:03.3133449
+Successful login attempt by: test at 2023-10-28 16:26:08.0023384
+Failed login attempt caused by Password error, by username: test at 2023-10-28 20:42:11.4493215
+Failed login attempt caused by Password error, by username: admin at 2023-10-28 20:42:18.4089138
+Successful login attempt by: admin at 2023-10-28 20:42:34.3858059
+Failed login attempt caused by UserName error, by username: tesst at 2023-10-28T20:45:22.126249300
+Failed login attempt caused by UserName error, by username: teest at 20:46:30.720459900
+Failed login attempt caused by UserName error, by username: w at 2023-10-28T20:47:30.599574
+Failed login attempt caused by UserName error, by username: q at 2023-10-29 04:13 UTC
+Successful login attempt by: test at 2023-10-29 04:13 UTC

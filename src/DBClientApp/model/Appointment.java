@@ -20,11 +20,11 @@ public class Appointment {
     private int userID;
     private int contactID;
     private String contact;
+    private int apptCount;
 
-    public Appointment(int appointmentID, String title, String description, String location, String type, Date start,
-                       Date end, Date createDate, String createdBy, Timestamp lastUpdate, String lastUpdatedBy,
-                       int customerID, int userID, int contactID) {
-
+    public Appointment(String type, int apptCount) {
+        this.type = type;
+        this.apptCount = apptCount;
     }
 
     public Appointment(int appointmentID, String title, String description, String location, String contact,
@@ -159,6 +159,10 @@ public class Appointment {
 
     public String getContact() {
         return contact;
+    }
+
+    public int getApptCount() {
+        return apptCount;
     }
 
 

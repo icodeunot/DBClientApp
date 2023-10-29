@@ -2,8 +2,10 @@ package DBClientApp.controller;
 
 import DBClientApp.DAO.AppointmentData;
 import DBClientApp.DAO.CustomerData;
+import DBClientApp.DAO.UserData;
 import DBClientApp.model.Appointment;
 import DBClientApp.model.Customer;
+import DBClientApp.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,6 +21,9 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -30,6 +35,8 @@ public class MenuController implements Initializable {
     static Customer chosenCustomer;
     // Item on the Appointment table selected
     static Appointment chosenAppointment;
+
+    private String userName;
 
     @FXML
     private Pane menuPane;
@@ -85,7 +92,7 @@ public class MenuController implements Initializable {
     @FXML
     private RadioButton menuAllAppointments;
     @FXML
-    private RadioButton menuCurrentAppointments;
+    private RadioButton menuWeekAppointments;
     @FXML
     private RadioButton menuMonthAppointments;
     //************************************************
@@ -145,6 +152,7 @@ public class MenuController implements Initializable {
             ObservableList<Appointment> apptList = AppointmentData.getAllApps();
             menuApptTable.setItems(apptList);
         }
+        menuAppointmentType.selectToggle(menuAllAppointments);
     }
 
     @FXML
@@ -259,17 +267,31 @@ public class MenuController implements Initializable {
 
     @FXML
     void menuRadioAll(ActionEvent event) {
-
+        if (menuAllAppointments.isSelected()) {
+            menuApptTable.getItems().clear();
+            ObservableList<Appointment> appsList = AppointmentData.getAllApps();
+            menuApptTable.setItems(appsList);
+        }
     }
 
     @FXML
-    void menuRadioCurrent(ActionEvent event) {
-
+    void menuRadioWeek(ActionEvent event) {
+        if (menuWeekAppointments.isSelected()) {
+            menuApptTable.getItems().clear();
+            menuApptTable.setPlaceholder(new Label("There are no appointments in the current week."));
+            ObservableList<Appointment> appsList = AppointmentData.getWeekApps();
+            menuApptTable.setItems(appsList);
+        }
     }
 
     @FXML
     void menuRadioMonth(ActionEvent event) {
-
+        if (menuMonthAppointments.isSelected()) {
+            menuApptTable.getItems().clear();
+            menuApptTable.setPlaceholder(new Label("There are no appointments in the current month."));
+            ObservableList<Appointment> appsList = AppointmentData.getMonthApps();
+            menuApptTable.setItems(appsList);
+        }
     }
 
     @FXML
@@ -356,9 +378,55 @@ public class MenuController implements Initializable {
         // Show the standard tables unfiltered
         //************************************************
         //Appointment Table
-        ObservableList<Appointment> appsList = AppointmentData.getAllApps();
-        menuApptTable.setItems(appsList);
+        ObservableList<User> userList = UserData.getUsers();
+        ObservableList<User> thisUser = FXCollections.observableArrayList();
+        int userID = -1;
+        userName = LoginController.getUserName();
+        int apptID = -1;
+        StringBuilder start = new StringBuilder();
+        for (User u : userList) {
+            if (u.getUserName().equals(userName)) {
+                thisUser.add(u);
+                userID = u.getUserID();
+            }
+        }
 
+        ObservableList<Appointment> appsList = AppointmentData.getAllApps();
+        ObservableList<Appointment> userApps = FXCollections.observableArrayList();
+        for (Appointment a : appsList) {
+            if (a.getUserID() == userID) {
+                userApps.add(a);
+            }
+        }
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime userTime = LocalDateTime.now();
+        boolean hasAppt = false;
+        for (Appointment alertAppt : userApps) {
+            LocalDateTime thisStartDateTime = LocalDateTime.parse(alertAppt.getStart(), dateFormat);
+            LocalDateTime thisEndDateTime = LocalDateTime.parse(alertAppt.getEnd(), dateFormat);
+            if (thisStartDateTime.isBefore(userTime.plusMinutes(15)) && thisStartDateTime.isAfter(userTime.minusMinutes(15))) {
+                hasAppt = true;
+                apptID = alertAppt.getAppointmentID();
+                start = new StringBuilder(start + "Appt ID: " + apptID + " at " + alertAppt.getStart() + "\n");
+            }
+        }
+        if (hasAppt == true) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Get Ready!");
+            alert.setHeaderText(userName + " has the following appointment(s) scheduled:\n" + start);
+            alert.setContentText("Please check the schedule and get ready for your appointment(s).");
+            alert.showAndWait();
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Woo Hoo!");
+            alert.setHeaderText("No upcoming appointments!");
+            alert.setContentText("Take a few minutes to relax, "+ userName +" has no upcoming appointments.");
+            alert.showAndWait();
+        }
+
+        menuApptTable.setItems(appsList);
         apptIDCol.setCellValueFactory(new PropertyValueFactory<>("appointmentID"));
         apptTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
         apptDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="reportPane" focusTraversable="true" prefHeight="660.0" prefWidth="900.0" style="-fx-border-radius: 2%;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DBClientApp.controller.ReportController" onMouseClicked="#onMouseClicked">
+<AnchorPane fx:id="reportPane" focusTraversable="true" onMouseClicked="#onMouseClicked" prefHeight="660.0" prefWidth="900.0" style="-fx-border-radius: 2%;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DBClientApp.controller.ReportController">
    <children>
       <Pane focusTraversable="true" layoutX="24.0" layoutY="60.0" prefHeight="565.0" prefWidth="850.0" style="-fx-border-color: black; -fx-border-radius: 2%;">
          <children>
@@ -75,12 +75,12 @@
                         <Insets left="5.0" right="5.0" />
                      </GridPane.margin>
                   </Separator>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="All Appointments by Type" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                  <Label alignment="CENTER" contentDisplay="CENTER" text="Customer Appointments by Type" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="reportTypeCombo" onAction="#reportTypeComboClick" prefWidth="150.0" promptText="Choose Type" visibleRowCount="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                  <ComboBox fx:id="reportTypeCombo" onAction="#reportTypeComboClick" prefWidth="150.0" promptText="Choose Customer" visibleRowCount="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
                   <TableView fx:id="reportTypeTable" prefHeight="170.0" prefWidth="270.0" GridPane.rowIndex="5">
                     <columns>
                       <TableColumn fx:id="reportTypeTypeCol" minWidth="-1.0" prefWidth="135.0" text="Appointment Type" />
@@ -96,16 +96,16 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </TableView>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="All Appointments by Month" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <Label alignment="CENTER" contentDisplay="CENTER" text="Customer Appointments by Month" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="reportMonthCombo" onAction="#reportMonthComboClick" prefWidth="150.0" promptText="Choose Month" visibleRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <TableView fx:id="reportCountryTable" prefHeight="170.0" prefWidth="270.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                  <ComboBox fx:id="reportMonthCombo" onAction="#reportMonthComboClick" prefWidth="150.0" promptText="Choose Customer" visibleRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <TableView fx:id="reportLocationTable" prefHeight="170.0" prefWidth="270.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
                      <columns>
-                        <TableColumn fx:id="reportCountryCol" minWidth="-1.0" prefWidth="135.0" text="Country" />
-                        <TableColumn fx:id="reportCountryCountCol" minWidth="-1.0" prefWidth="135.0" text="Count by Country" />
+                        <TableColumn fx:id="reportLocationCol" minWidth="-1.0" prefWidth="135.0" text="Appointment Location" />
+                        <TableColumn fx:id="reportLocationCountCol" minWidth="-1.0" prefWidth="135.0" text="Count by Location" />
                      </columns>
                      <opaqueInsets>
                         <Insets />
@@ -117,12 +117,12 @@
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TableView>
-                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="357.0" layoutY="304.0" text="All Appointments by Country" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="357.0" layoutY="304.0" text="Customer Appointments by Location" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="reportCountryCombo" onAction="#reportCountryComboClick" prefWidth="150.0" promptText="Choose Country" visibleRowCount="3" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <ComboBox fx:id="reportLocationCombo" onAction="#reportLocationComboClick" prefWidth="150.0" promptText="Choose Customer" visibleRowCount="3" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
                   <TableView fx:id="reportMonthTable" prefHeight="170.0" prefWidth="270.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <columns>
                         <TableColumn fx:id="reportMonthMonthCol" minWidth="-1.0" prefWidth="135.0" text="Appointment Month" />

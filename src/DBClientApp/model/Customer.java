@@ -26,15 +26,6 @@ public class Customer {
         this.divisionID = divisionID;
     }
 
-    // public Customer(String customerName, int customerID, String address, String postalCode, String phone, String countryName) {
-    //     this.customerName = customerName;
-    //     this.customerID = customerID;
-    //     this.address = address;
-    //     this.postalCode = postalCode;
-    //     this.phone = phone;
-    //     this.countryName = countryName;
-    // }
-
     public void setCustomerID(int customerID) {
         this.customerID = customerID;
     }
@@ -126,5 +117,10 @@ public class Customer {
     }
 
     public String getCountryName() { return countryName; }
+
+    @Override
+    public String toString() {
+        return customerName;
+    }
 
 }
