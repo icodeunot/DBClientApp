@@ -22,117 +22,85 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+
+/**
+ * MenuController class. This class handles the Main Menu logic.
+ */
 public class MenuController implements Initializable {
-    // UI Variables
+
+    // MenuController Attributes
     Stage stage;
     Scene scene;
-    // Item on the Customer table selected
     static Customer chosenCustomer;
-    // Item on the Appointment table selected
     static Appointment chosenAppointment;
-
     private String userName;
 
-    @FXML
-    private Pane menuPane;
-    //************************************************
-    // Tables
-    //************************************************
-    // Appointment table attributes
-    @FXML
-    private TableView<Appointment> menuApptTable;
-    // Appointment table columns
-    @FXML
-    private TableColumn<?, ?> apptContactCol;
-    @FXML
-    private TableColumn<?, ?> apptCustIDCol;
-    @FXML
-    private TableColumn<?, ?> apptDescriptionCol;
-    @FXML
-    private TableColumn<?, ?> apptEndCol;
-    @FXML
-    private TableColumn<?, ?> apptIDCol;
-    @FXML
-    private TableColumn<?, ?> apptLocationCol;
-    @FXML
-    private TableColumn<?, ?> apptStartCol;
-    @FXML
-    private TableColumn<?, ?> apptTitleCol;
-    @FXML
-    private TableColumn<?, ?> apptTypeCol;
-    @FXML
-    private TableColumn<?, ?> apptUserIDCol;
-    //************************************************
-    // Customer table attributes
-    @FXML
-    private TableView<Customer> menuCustTable;
-    // Customer table columns
-    @FXML
-    private TableColumn<?, ?> custAddressCol;
-    @FXML
-    private TableColumn<?, ?> custCountryCol;
-    @FXML
-    private TableColumn<?, ?> custIDCol;
-    @FXML
-    private TableColumn<?, ?> custNameCol;
-    @FXML
-    private TableColumn<?, ?> custPhoneCol;
-    @FXML
-    private TableColumn<?, ?> custPostalCodeCol;
-    //************************************************
-    // Menu toggle group for All, Month, Week
-    //************************************************
-    @FXML
-    private ToggleGroup menuAppointmentType;
-    @FXML
-    private RadioButton menuAllAppointments;
-    @FXML
-    private RadioButton menuWeekAppointments;
-    @FXML
-    private RadioButton menuMonthAppointments;
-    //************************************************
-    // Buttons
-    //************************************************
-    @FXML
-    private Button menuApptAddBtn;
-    @FXML
-    private Button menuApptDeleteBtn;
-    @FXML
-    private Button menuApptUpdateBtn;
-    @FXML
-    private Button menuCustAddBtn;
-    @FXML
-    private Button menuCustDeleteBtn;
-    @FXML
-    private Button menuCustUpdateBtn;
-    @FXML
-    private Button menuLogoutBtn;
-    @FXML
-    private Button menuReportsBtn;
-    //************************************************
-    // Events
-    //************************************************
-    // Add appointment - No selector
+    @FXML private Pane menuPane;
+    @FXML private Button menuApptAddBtn;
+    @FXML private Button menuApptDeleteBtn;
+    @FXML private Button menuApptUpdateBtn;
+    @FXML private Button menuCustAddBtn;
+    @FXML private Button menuCustDeleteBtn;
+    @FXML private Button menuCustUpdateBtn;
+    @FXML private Button menuLogoutBtn;
+    @FXML private Button menuReportsBtn;
+    @FXML private ToggleGroup menuAppointmentType;
+    @FXML private RadioButton menuAllAppointments;
+    @FXML private RadioButton menuWeekAppointments;
+    @FXML private RadioButton menuMonthAppointments;
+    @FXML private TableColumn<?, ?> apptContactCol;
+    @FXML private TableColumn<?, ?> apptCustIDCol;
+    @FXML private TableColumn<?, ?> apptDescriptionCol;
+    @FXML private TableColumn<?, ?> apptEndCol;
+    @FXML private TableColumn<?, ?> apptIDCol;
+    @FXML private TableColumn<?, ?> apptLocationCol;
+    @FXML private TableColumn<?, ?> apptStartCol;
+    @FXML private TableColumn<?, ?> apptTitleCol;
+    @FXML private TableColumn<?, ?> apptTypeCol;
+    @FXML private TableColumn<?, ?> apptUserIDCol;
+    @FXML private TableColumn<?, ?> custAddressCol;
+    @FXML private TableColumn<?, ?> custCountryCol;
+    @FXML private TableColumn<?, ?> custIDCol;
+    @FXML private TableColumn<?, ?> custNameCol;
+    @FXML private TableColumn<?, ?> custPhoneCol;
+    @FXML private TableColumn<?, ?> custPostalCodeCol;
+    @FXML private TableView<Appointment> menuApptTable;
+    @FXML private TableView<Customer> menuCustTable;
 
+    /**
+     * chooseYourCustomer. This event returns the customer object.
+     * @return chosenCustomer
+     */
     public static Customer chooseYourCustomer() {
         return chosenCustomer;
     }
+
+    /**
+     * chooseYourAppointment. This method returns the chosenAppointment.
+     * @return chooseYourAppointment
+     */
     public static Appointment chooseYourAppointment() {
         return chosenAppointment;
     }
 
-    @FXML
-    void onMouseClicked(MouseEvent event) {
+    /**
+     * onMouseClicked. This method requests focus of the mouse for user's visual assurance when clicking out of a text field.
+     * @param event
+     */
+    @FXML void onMouseClicked(MouseEvent event) {
         menuPane.requestFocus();
     }
 
-    @FXML
-    void menuApptAddClick(ActionEvent event) throws IOException {
+    /**
+     * menuApptAddClick. This event sends the user to the Add Appointment form.
+     * @param event
+     * @throws IOException
+     */
+    @FXML void menuApptAddClick(ActionEvent event) throws IOException {
         stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
         scene = new Scene(FXMLLoader.load(getClass().getResource("/DBClientApp/view/AddAppointment.fxml")));
         stage.setTitle("Add Appointment");
@@ -141,8 +109,13 @@ public class MenuController implements Initializable {
         stage.show();
     }
 
-    @FXML
-    void menuApptDeleteClick(ActionEvent event) throws SQLException, IOException {
+    /**
+     * menuApptDeleteClick. This event deletes an appointment if it passes logic.
+     * @param event
+     * @throws SQLException
+     * @throws IOException
+     */
+    @FXML void menuApptDeleteClick(ActionEvent event) throws SQLException, IOException {
         chosenAppointment = menuApptTable.getSelectionModel().getSelectedItem();
         if (chosenAppointment == null) {
             alert(4);
@@ -155,8 +128,13 @@ public class MenuController implements Initializable {
         menuAppointmentType.selectToggle(menuAllAppointments);
     }
 
-    @FXML
-    void menuApptUpdateClick(ActionEvent event) throws IOException, SQLException {
+    /**
+     * menuApptUpdateClick. This event checks to make sure an appointment is selcted, and sends the user to the update appointment form.
+     * @param event
+     * @throws IOException
+     * @throws SQLException
+     */
+    @FXML void menuApptUpdateClick(ActionEvent event) throws IOException, SQLException {
         chosenAppointment = menuApptTable.getSelectionModel().getSelectedItem();
         if (chosenAppointment == null) {
             alert(4);
@@ -175,8 +153,12 @@ public class MenuController implements Initializable {
         }
     }
 
-    @FXML
-    void menuCustAddClick(ActionEvent event) throws IOException {
+    /**
+     * menuCustAddClick. This method brings the user to the Add Customer form.
+     * @param event
+     * @throws IOException
+     */
+    @FXML void menuCustAddClick(ActionEvent event) throws IOException {
         stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
         scene = new Scene(FXMLLoader.load(getClass().getResource("/DBClientApp/view/AddCustomer.fxml")));
         stage.setTitle("Add Customer Menu");
@@ -185,8 +167,14 @@ public class MenuController implements Initializable {
         stage.show();
     }
 
-    @FXML
-    void menuCustDeleteClick(ActionEvent event) throws SQLException, IOException {
+    /**
+     * menuCustDeleteClick. This event will delete a customer upon the users confirmation.
+     * The method first checks for appointments tied to the customer and deletes them prior to deleting the customer.
+     * @param event
+     * @throws SQLException
+     * @throws IOException
+     */
+    @FXML void menuCustDeleteClick(ActionEvent event) throws SQLException, IOException {
         chosenCustomer = menuCustTable.getSelectionModel().getSelectedItem();
         if (chosenCustomer == null) {
             alert(1);
@@ -240,8 +228,14 @@ public class MenuController implements Initializable {
         }
     }
 
-    @FXML
-    void menuCustUpdateClick(ActionEvent event) throws IOException, SQLException {
+    /**
+     * menuCustUpdateClick. This event selects a customer based on the users choice from the tableview.
+     * If there is no selection of a customer an error will fire. Otherwise the customer object is used in the update form.
+     * @param event
+     * @throws IOException
+     * @throws SQLException
+     */
+    @FXML void menuCustUpdateClick(ActionEvent event) throws IOException, SQLException {
         chosenCustomer = menuCustTable.getSelectionModel().getSelectedItem();
         if (chosenCustomer == null) {
             alert(1);
@@ -255,8 +249,13 @@ public class MenuController implements Initializable {
         stage.show();
     }
 
-    @FXML
-    void menuLogoutClick(ActionEvent event) throws IOException {
+    /**
+     * menuLogoutClick. This event sends the user back to the Login Menu, effectively logging out the user.
+     * The login page will require a password to return to the menu page.
+     * @param event
+     * @throws IOException
+     */
+    @FXML void menuLogoutClick(ActionEvent event) throws IOException {
         stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
         scene = new Scene(FXMLLoader.load(getClass().getResource("/DBClientApp/view/Login.fxml")));
         stage.setTitle("Login Menu");
@@ -265,8 +264,12 @@ public class MenuController implements Initializable {
         stage.show();
     }
 
-    @FXML
-    void menuRadioAll(ActionEvent event) {
+    /**
+     * menuRadioAll. This event is the All appointments radio button.
+     * It fills the appointments tableview with all appointments.
+     * @param event
+     */
+    @FXML void menuRadioAll(ActionEvent event) {
         if (menuAllAppointments.isSelected()) {
             menuApptTable.getItems().clear();
             ObservableList<Appointment> appsList = AppointmentData.getAllApps();
@@ -274,8 +277,12 @@ public class MenuController implements Initializable {
         }
     }
 
-    @FXML
-    void menuRadioWeek(ActionEvent event) {
+    /**
+     * menuRadioWeek. This event is the radio button for weekly appointments.
+     * The code fills the appointment tableview with appointments within the current week.
+     * @param event
+     */
+    @FXML void menuRadioWeek(ActionEvent event) {
         if (menuWeekAppointments.isSelected()) {
             menuApptTable.getItems().clear();
             menuApptTable.setPlaceholder(new Label("There are no appointments in the current week."));
@@ -284,8 +291,12 @@ public class MenuController implements Initializable {
         }
     }
 
-    @FXML
-    void menuRadioMonth(ActionEvent event) {
+    /**
+     * menuRadioMonth. This event is the radio button for appointments by month.
+     * The code fills the appointment tableview with appointments within the current month.
+     * @param event
+     */
+    @FXML void menuRadioMonth(ActionEvent event) {
         if (menuMonthAppointments.isSelected()) {
             menuApptTable.getItems().clear();
             menuApptTable.setPlaceholder(new Label("There are no appointments in the current month."));
@@ -294,8 +305,12 @@ public class MenuController implements Initializable {
         }
     }
 
-    @FXML
-    void menuReportClick(ActionEvent event) throws IOException {
+    /**
+     * menuReportClick. This method brings the user to the Reports page.
+     * @param event
+     * @throws IOException
+     */
+    @FXML void menuReportClick(ActionEvent event) throws IOException {
         stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
         scene = new Scene(FXMLLoader.load(getClass().getResource("/DBClientApp/view/Report.fxml")));
         stage.setTitle("Report Menu");
@@ -304,6 +319,12 @@ public class MenuController implements Initializable {
         stage.show();
     }
 
+    /**
+     * alert. This method is used to communicate various errors and information to the user.
+      * @param alertNum
+     * @throws IOException
+     * @throws SQLException
+     */
     private void alert(int alertNum) throws IOException, SQLException {
         switch (alertNum) {
             // Customer Alerts
@@ -371,13 +392,16 @@ public class MenuController implements Initializable {
         }
     }
 
+    /**
+     * initialize. This overridden initilaize method starts the menu controller and alerts for appointments within q5 minutes for the logged in user.
+     * The method uses several calls to the database to fill the tableviews with the customers and appointments.
+     * The alerts included in the method are used for the user appointment reminders.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Menu Controller Launched");
-        //************************************************
-        // Show the standard tables unfiltered
-        //************************************************
-        //Appointment Table
         ObservableList<User> userList = UserData.getUsers();
         ObservableList<User> thisUser = FXCollections.observableArrayList();
         int userID = -1;
@@ -438,9 +462,6 @@ public class MenuController implements Initializable {
         apptCustIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         apptUserIDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
 
-
-        //************************************************
-        // Customer Table
         ObservableList<Customer> custList = CustomerData.getAllCusts();
         menuCustTable.setItems(custList);
 

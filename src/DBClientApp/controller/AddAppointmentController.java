@@ -2,9 +2,7 @@ package DBClientApp.controller;
 
 import DBClientApp.DAO.*;
 import DBClientApp.model.*;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +13,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -23,20 +20,20 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+
+/**
+ * AddAppointmentController class. This class handles the logic for adding an appointment to the database.
+ */
 public class AddAppointmentController implements Initializable {
 
+    // AddAppointmentController variables
     Stage stage;
     Scene scene;
 
-     // Get the times converted for combobox insertion
-    // Get system timezone
+    // Time data for general use of new inputs
     ZoneId userTime = ZoneId.systemDefault();
-
-    // Start
     ZonedDateTime est2systemStart = ZonedDateTime.of(LocalDate.now(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
     ZonedDateTime myHourStart = est2systemStart.withZoneSameInstant(userTime);
-
-    // Time block to handle cases where an appointment begins today.
     public int startMinute() {
         int minute = LocalTime.now().getMinute();
         minute = (minute >= 0 && minute <= 59) ? minute : 0;
@@ -48,52 +45,45 @@ public class AddAppointmentController implements Initializable {
     int hour = LocalTime.now().getHour();
     ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMinute()), ZoneId.of(String.valueOf(userTime)));
     ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
-
-    // End
     ZonedDateTime est2systemEnd = ZonedDateTime.of(LocalDate.now(), LocalTime.of(22, 0), ZoneId.of("America/New_York"));
     ZonedDateTime myHourEnd = est2systemEnd.withZoneSameInstant(userTime);
 
+    @FXML private Pane addApptPane;
+    @FXML private Button addApptCancelBtn;
+    @FXML private Button addApptSaveBtn;
+    @FXML private ComboBox<Contact> addApptContactCombo;
+    @FXML private ComboBox<Integer> addApptCustIDCombo;
+    @FXML private ComboBox<Integer> addApptUserIDCombo;
+    @FXML private ComboBox<LocalTime> addApptETimeCombo;
+    @FXML private ComboBox<LocalTime> addApptSTimeCombo;
+    @FXML private DatePicker addApptSDateCal;
+    @FXML private DatePicker addApptEDateCal;
+    @FXML private TextField addApptDescriptionTxt;
+    @FXML private TextField addApptLocationTxt;
+    @FXML private TextField addApptTitleTxt;
+    @FXML private TextField addApptTypeTxt;
+    @FXML private TextField addApptApptIDTxt;
 
-    @FXML
-    private Pane addApptPane;
-    @FXML
-    private TextField addApptApptIDTxt;
-    @FXML
-    private Button addApptCancelBtn;
-    @FXML
-    private ComboBox<Contact> addApptContactCombo;
-    @FXML
-    private ComboBox<Integer> addApptCustIDCombo;
-    @FXML
-    private TextField addApptDescriptionTxt;
-    @FXML
-    private DatePicker addApptEDateCal;
-    @FXML
-    private ComboBox<LocalTime> addApptETimeCombo;
-    @FXML
-    private TextField addApptLocationTxt;
-    @FXML
-    private DatePicker addApptSDateCal;
-    @FXML
-    private ComboBox<LocalTime> addApptSTimeCombo;
-    @FXML
-    private Button addApptSaveBtn;
-    @FXML
-    private TextField addApptTitleTxt;
-    @FXML
-    private TextField addApptTypeTxt;
-    @FXML
-    private ComboBox<Integer> addApptUserIDCombo;
-
-    @FXML
-    void onMouseClicked(MouseEvent event) {
+    /**
+     * onMouseClicked. This event requests mouse focus if the user clicks off the text field. Adds visual assurance for the user.
+      * @param event
+     */
+    @FXML void onMouseClicked(MouseEvent event) {
         addApptPane.requestFocus();
     }
-    @FXML
-    void addApptApptIDClick(ActionEvent event) {
-    }
-    @FXML
-    void addApptCancelClick(ActionEvent event) throws IOException {
+
+    /**
+     * addApptApptIDClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptApptIDClick(ActionEvent event) { validateForm(); }
+
+    /**
+     * addApptCancelClick. This event sends the user back to the main menu.
+     * @param event
+     * @throws IOException
+     */
+    @FXML void addApptCancelClick(ActionEvent event) throws IOException {
         stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
         scene = new Scene(FXMLLoader.load(getClass().getResource("/DBClientApp/view/Menu.fxml")));
         stage.setTitle("Main Menu");
@@ -101,33 +91,66 @@ public class AddAppointmentController implements Initializable {
         stage.centerOnScreen();
         stage.show();
     }
-    @FXML
-    void addApptContactClick(ActionEvent event) {
+
+    /**
+     * addApptContactClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptContactClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void addApptCustIDClick(ActionEvent event) {
+
+    /**
+     * addApptCustClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptCustIDClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void addApptDescriptionClick(ActionEvent event) {
+
+    /**
+     * addApptDescriptionCLick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptDescriptionClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void addApptEDateClick(ActionEvent event) {
+
+    /**
+     * addApptEDateClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptEDateClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void addApptETimeClick(ActionEvent event) {
+
+    /**
+     * addAPptETimeClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptETimeClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void addApptLocationClick(ActionEvent event) {
+
+    /**
+     * addApptLocationClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptLocationClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void addApptSDateClick(ActionEvent event) {
-        // this method's local time needs
+
+    /**
+     * addApptSDateClick. This event will alert if the date is historical or the business has closed for the day.
+     * The method sets the start time combo box with applicable times and sets the end date combo to the same date.
+     * @param event
+     */
+    @FXML void addApptSDateClick(ActionEvent event) {
+        addApptEDateCal.setValue(addApptSDateCal.getValue());
+        addApptEDateCal.setEditable(false);
+        addApptEDateCal.setOpacity(1);
+
+        // Time details for this instance
         int minute = LocalTime.now().getMinute();
         if (minute == 0) {
             minute = 0;
@@ -139,9 +162,9 @@ public class AddAppointmentController implements Initializable {
         if (startMin >= 60) {
             startMin = 0;
         }
-
         ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMin), ZoneId.of(String.valueOf(userTime)));
         ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
+
         // checking different date scenarios. keeping user from hurting themselves.
         if (addApptSDateCal.getValue() != null && addApptSDateCal.getValue().equals(LocalDate.now()) && todayHourStart.isAfter(myHourEnd)) {
             addApptSDateCal.getEditor().clear();
@@ -168,16 +191,12 @@ public class AddAppointmentController implements Initializable {
                             addApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
                             localOpen = localOpen.plusMinutes(5);
                         }
-                        addApptEDateCal.setValue(addApptSDateCal.getValue());
-                        addApptETimeCombo.setDisable(true);
                     } else if (todayHourStart.isBefore(myHourStart)) {
                         LocalTime localOpen = myHourStart.toLocalTime();
                         while (localOpen.isBefore(myHourEnd.toLocalTime().plusSeconds(1))) {
                             addApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
                             localOpen = localOpen.plusMinutes(5);
                         }
-                        addApptEDateCal.setValue(addApptSDateCal.getValue());
-                        addApptETimeCombo.setDisable(true);
                     } else {
                         addApptSTimeCombo.getItems().clear();
                         LocalTime localOpen = todayHourStart.toLocalTime();
@@ -185,8 +204,6 @@ public class AddAppointmentController implements Initializable {
                             addApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
                             localOpen = localOpen.plusMinutes(5);
                         }
-                        addApptEDateCal.setValue(addApptSDateCal.getValue());
-                        addApptETimeCombo.setDisable(true);
                     }
                 }
             } else {
@@ -195,14 +212,18 @@ public class AddAppointmentController implements Initializable {
                     addApptSTimeCombo.getItems().add(LocalTime.from(localOpen));
                     localOpen = localOpen.plusMinutes(5);
                 }
-                addApptEDateCal.setValue(addApptSDateCal.getValue());
-                addApptETimeCombo.setDisable(true);
             }
         }
         validateForm();
     }
-    @FXML
-    void addApptSTimeClick(ActionEvent event) {
+
+    /**
+     * addApptSTimeClick. This event sets the start combo box based on various factors. An appt on the same day only allows
+     * appointments to start after the current time. Choosing a start time will automatically set the end time combo box for
+     * 5 minutes after the start time, through to closing.
+     * @param event
+     */
+    @FXML void addApptSTimeClick(ActionEvent event) {
         if (addApptSDateCal.getValue() != null) {
             addApptETimeCombo.setDisable(false);
             addApptETimeCombo.getItems().clear();
@@ -222,8 +243,12 @@ public class AddAppointmentController implements Initializable {
         }
         validateForm();
     }
-    @FXML
-    void addApptSaveClick(ActionEvent event) {
+
+    /**
+     * addApptSaveClick. This event verifies data and saves the info to the database.
+     * @param event
+     */
+    @FXML void addApptSaveClick(ActionEvent event) {
         ObservableList<Appointment> apptList = AppointmentData.getAllApps();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String thisStart = addApptSDateCal.getValue() + " " + addApptSTimeCombo.getSelectionModel().getSelectedItem();
@@ -292,20 +317,35 @@ public class AddAppointmentController implements Initializable {
             e.printStackTrace();
         }
     }
-    @FXML
-    void addApptTitleClick(ActionEvent event) {
-        validateForm();
-    }
-    @FXML
-    void addApptTypeClick(ActionEvent event) {
-        validateForm();
-    }
-    @FXML
-    void addApptUserIDClick(ActionEvent event) {
+
+    /**
+     * addApptTitleClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptTitleClick(ActionEvent event) {
         validateForm();
     }
 
-    // Alerts
+    /**
+     * addApptTypeClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptTypeClick(ActionEvent event) {
+        validateForm();
+    }
+
+    /**
+     * addApptUserIDClick. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void addApptUserIDClick(ActionEvent event) {
+        validateForm();
+    }
+
+    /**
+     * alert. This method communicates various errors and information to the user.
+     * @param alertNum
+     */
     private void alert(int alertNum) {
         switch (alertNum) {
             case 1 -> {
@@ -359,7 +399,10 @@ public class AddAppointmentController implements Initializable {
             }
         }
     }
-    // Don't allow Save unless all fields have data
+
+    /**
+     * validateForm. This method ensures all data is filled before allowing the appointment to be added.
+     */
     private void validateForm() {
         boolean formValidated = true;
         if (addApptTitleTxt.getText().isEmpty() ||
@@ -378,19 +421,23 @@ public class AddAppointmentController implements Initializable {
         addApptSaveBtn.setDisable(!formValidated);
     }
 
+    /**
+     * initialize. This method initializes the addAppointment page. It applies date and time logic to the combo boxes.
+     * The method creates lists for the users, contacts, and customers.
+     * The method starts the save button as disabled in order to verify logic above with the validateForm calls.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Add Appointment Controller Launched");
-        // validateForm();
         addApptSaveBtn.setDisable(true);
-        // Get system timezone
-        ZoneId userTime = ZoneId.systemDefault();
 
-        // Start
+        // Time details for initialization
+        ZoneId userTime = ZoneId.systemDefault();
         ZonedDateTime est2systemStart = ZonedDateTime.of(LocalDate.now(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
         ZonedDateTime myHourStart = est2systemStart.withZoneSameInstant(userTime);
 
-        // Time block to handle cases where an appointment begins today.
         int minute = LocalTime.now().getMinute();
         minute = (minute >= 0 && minute <= 59) ? minute : 0;
         int getTimeToAdd = minute % 5;
@@ -399,10 +446,9 @@ public class AddAppointmentController implements Initializable {
         startMin = (startMin >= 0 && startMin <= 59) ? startMin : 0;
         ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMin), ZoneId.of(String.valueOf(userTime)));
         ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
-
-        // End
         ZonedDateTime est2systemEnd = ZonedDateTime.of(LocalDate.now(), LocalTime.of(22, 0), ZoneId.of("America/New_York"));
         ZonedDateTime myHourEnd = est2systemEnd.withZoneSameInstant(userTime);
+
         // Disable the end date and have it auto-set
         addApptEDateCal.setDisable(true);
         addApptEDateCal.setStyle("-fx-opacity: 1;");

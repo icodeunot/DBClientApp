@@ -9,8 +9,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+/**
+ * CustomerData class. This class handles the customer needs from the database.
+ */
 public class CustomerData {
 
+    /**
+     * getAllCusts. This method returns all the customers from the customer table in the database.
+      * @return custListDAO
+     */
     public static ObservableList<Customer> getAllCusts() {
         // Create a list to hold the data
         ObservableList<Customer> custListDAO = FXCollections.observableArrayList();
@@ -49,7 +57,19 @@ public class CustomerData {
         return custListDAO;
     }
 
-
+    /**
+     * insertCustomer. This method adds a customer to the database.
+     * Note the createdBy and lastUpdatedBy come from the AddCustomerController, through a call to the LoginController text fields.
+      * @param customerName
+     * @param address
+     * @param postalCode
+     * @param phone
+     * @param createdBy
+     * @param lastUpdatedBy
+     * @param divisionID
+     * @return rowsAffected
+     * @throws SQLException
+     */
     public static int insertCustomer(String customerName, String address, String postalCode, String phone,
                                      String createdBy, String lastUpdatedBy, int divisionID) throws SQLException {
         String sql = "INSERT INTO CUSTOMERS (Customer_Name, Address, Postal_Code, Phone, Created_By, Last_Updated_By, Division_ID) VALUES(?, ?, ?, ?, ?, ?, ?)";
@@ -65,6 +85,18 @@ public class CustomerData {
         return rowsAffected;
     }
 
+    /**
+     * updateCustomer. This method modifies the customer in the database.
+      * @param customerName
+     * @param address
+     * @param postalCode
+     * @param phone
+     * @param user
+     * @param divisionID
+     * @param customerID
+     * @return rowsAffected
+     * @throws SQLException
+     */
     public static int updateCustomer(String customerName, String address, String postalCode, String phone,
                                      String user, int divisionID, int customerID) throws SQLException {
         ObservableList<FirstLevelDivision> divisions = DivisionData.getDivisions();
@@ -87,6 +119,12 @@ public class CustomerData {
         return rowsAffected;
     }
 
+    /**
+     * delete. This method is used to delete customers from the database after confirming all appointments are deleted.
+      * @param custID
+     * @return rowsAffected
+     * @throws SQLException
+     */
     public static int delete(int custID) throws SQLException {
         String sql = "DELETE FROM customers WHERE Customer_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);

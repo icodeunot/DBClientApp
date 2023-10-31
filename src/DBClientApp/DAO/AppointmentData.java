@@ -2,10 +2,8 @@ package DBClientApp.DAO;
 
 import DBClientApp.helper.JDBC;
 import DBClientApp.model.Appointment;
-import DBClientApp.model.FirstLevelDivision;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,9 +12,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+
+/**
+ * AppointmentData class. This class handles all appointment needs from the database.
+ */
 public class AppointmentData {
 
-    // Function to grab all appointments
+    /**
+     * getAllApps. This method pulls all of the appointments from the database.
+     * Used to initialize the appointment table and in the radio AllAppointments button.
+     * @return appsListDAO
+     */
     public static ObservableList<Appointment> getAllApps() {
         // Create a list to hold the data
         ObservableList <Appointment> appsListDAO = FXCollections.observableArrayList();
@@ -67,7 +73,10 @@ public class AppointmentData {
         return appsListDAO;
     }
 
-    // Function to grab weekly appointments
+    /**
+     * getWeekApps. This method pulls the appointments within the current week. For use with the Week radio button.
+      * @return appsListDAO
+     */
     public static ObservableList<Appointment> getWeekApps() {
         // Create a list to hold the data
         ObservableList <Appointment> appsListDAO = FXCollections.observableArrayList();
@@ -118,7 +127,11 @@ public class AppointmentData {
         return appsListDAO;
     }
 
-    // Function to grab monthly appointments in the database
+    /**
+     * getMonthApps. This method pulls the appointments within a month of the current date.
+     * For use with the month radio button.
+      * @return appsListDAO
+     */
     public static ObservableList<Appointment> getMonthApps() {
         // Create a list to hold the data
         ObservableList <Appointment> appsListDAO = FXCollections.observableArrayList();
@@ -169,6 +182,20 @@ public class AppointmentData {
         return appsListDAO;
     }
 
+    /**
+     * insertAppointment. This method adds a new appointment to the database.
+      * @param title
+     * @param description
+     * @param location
+     * @param type
+     * @param startTS
+     * @param endTS
+     * @param custID
+     * @param userID
+     * @param contactID
+     * @return rowsAffected
+     * @throws SQLException
+     */
     public static int insertAppointment(String title, String description, String location, String type,
                                         Timestamp startTS, Timestamp endTS, int custID, int userID, int contactID) throws SQLException {
         String sql = "INSERT INTO APPOINTMENTS (Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -186,7 +213,12 @@ public class AppointmentData {
         return rowsAffected;
     }
 
-    // Erases all appointments for a customer from the customer table
+    /**
+     * deleteAppt. This method deletes all appointments for a customer, per CustomerID
+      * @param custID
+     * @return rowsAffected
+     * @throws SQLException
+     */
     public static int deleteAppt(int custID) throws SQLException {
         String sql = "DELETE FROM appointments WHERE Customer_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -195,7 +227,12 @@ public class AppointmentData {
         return rowsAffected;
     }
 
-    // Erases a single appointment from the appointment table
+    /**
+     * deleteOneAppt. This method deletes a single appointment per appointment ID.
+      * @param apptID
+     * @return rowsAffeceted
+     * @throws SQLException
+     */
     public static int deleteOneAppt(int apptID) throws SQLException {
         String sql = "DELETE FROM appointments WHERE Appointment_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -204,6 +241,21 @@ public class AppointmentData {
         return rowsAffected;
     }
 
+    /**
+     * updateAppointment. This method modifies an appointment.
+      * @param title
+     * @param description
+     * @param location
+     * @param type
+     * @param startTS
+     * @param endTS
+     * @param custID
+     * @param userID
+     * @param contactID
+     * @param appointmentID
+     * @return rowsAffected
+     * @throws SQLException
+     */
     public static int updateAppointment(String title, String description, String location, String type,
                                      Timestamp startTS, Timestamp endTS, int custID, int userID, int contactID, int appointmentID) throws SQLException {
         String sql = """
@@ -227,7 +279,11 @@ public class AppointmentData {
         return rowsAffected;
     }
 
-    // Report queries
+    /**
+     * getTypeApps. This method pulls appointments by type, according to customer.
+      * @param custID
+     * @return appsListDAO
+     */
     public static ObservableList<Appointment> getTypeApps(int custID) {
         // Create a list to hold the data
         ObservableList <Appointment> appsListDAO = FXCollections.observableArrayList();
@@ -261,7 +317,11 @@ public class AppointmentData {
         return appsListDAO;
     }
 
-
+    /**
+     * getMonthApps. This method gets appointments by month, according to the chosen customer.
+      * @param custID
+     * @return appsListDAO
+     */
     public static ObservableList<Appointment> getMonthApps(int custID) {
         // Create a list to hold the data
         ObservableList <Appointment> appsListDAO = FXCollections.observableArrayList();
@@ -295,6 +355,11 @@ public class AppointmentData {
         return appsListDAO;
     }
 
+    /**
+     * getLocationApps. This method gets appoints by location, per a chosen customer.
+      * @param custID
+     * @return appsListDAO
+     */
     public static ObservableList<Appointment> getLocationApps(int custID) {
         // Create a list to hold the data
         ObservableList <Appointment> appsListDAO = FXCollections.observableArrayList();
@@ -328,6 +393,11 @@ public class AppointmentData {
         return appsListDAO;
     }
 
+    /**
+     * getContactApps. This method get appointments by contact.
+      * @param contactID
+     * @return appsListDAO
+     */
     public static ObservableList<Appointment> getContactApps(int contactID) {
         // Create a list to hold the data
         ObservableList <Appointment> appsListDAO = FXCollections.observableArrayList();

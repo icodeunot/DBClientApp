@@ -1,32 +1,48 @@
 package DBClientApp.model;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
+/**
+ * Appointment class. Contains the methods and attributes for the Appointment object.
+ */
 public class Appointment {
+
+    // Appointment Attributes
     private int appointmentID;
+    private int customerID;
+    private int userID;
+    private int contactID;
+    private int apptCount;
     private String title;
     private String description;
     private String location;
     private String type;
     private String start;
     private String end;
-    private LocalDateTime createDate;
-    private String createdBy;
-    private Timestamp lastUpdate;
-    private String lastUpdatedBy;
-    private int customerID;
-    private int userID;
-    private int contactID;
     private String contact;
-    private int apptCount;
 
+    /**
+     * Appointment constructor. This constructor is used to assure a modified appointment does not trigger an overlap warning.
+      * @param type
+     * @param apptCount
+     */
     public Appointment(String type, int apptCount) {
         this.type = type;
         this.apptCount = apptCount;
     }
 
+    /**
+     * Overloaded Appointment Constructor. This is the constructor used for CRUD actions.
+     * @param appointmentID
+     * @param title
+     * @param description
+     * @param location
+     * @param contact
+     * @param type
+     * @param customerID
+     * @param userID
+     * @param start
+     * @param end
+     */
     public Appointment(int appointmentID, String title, String description, String location, String contact,
                        String type, int customerID, int userID, String start, String end) {
         this.appointmentID = appointmentID;
@@ -41,129 +57,141 @@ public class Appointment {
         this.userID = userID;
     }
 
-    public void setAppointmentID(int appointmentID) {
-        this.appointmentID = appointmentID;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
+    /**
+     * setLocation. sets the location of the appt.
+      * @param location
+     */
     public void setLocation(String location) {
         this.location = location;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
+    /**
+     * setStart. Sets the start of the appointment.
+     * @param start
+     */
     public void setStart(String start) {
         this.start = start;
     }
 
-    public void setEnd(String end) {
-        this.end = end;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setLastUpdate(Timestamp lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    public void setLastUpdatedBy(String lastUpdatedBy) {
-        this.lastUpdatedBy = lastUpdatedBy;
-    }
-
-    public void setCustomerID(int customerID) {
-        this.customerID = customerID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void setContactID(int contactID) {
-        this.contactID = contactID;
-    }
-
+    /**
+     * getAppointmentID. Gets the appointment ID.
+      * @return appointmentID
+     */
     public int getAppointmentID() {
         return appointmentID;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getStart() {
-        return start;
-    }
-
-    public String getEnd() {
-        return end;
-    }
-
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public Timestamp getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public String getLastUpdatedBy() {
-        return lastUpdatedBy;
-    }
-
+    /**
+     * getCustomerID. Gets customer ID.
+     * @return customerID
+     */
     public int getCustomerID() {
         return customerID;
     }
 
+    /**
+     * getUserID. Gets the UserID.
+     * @return
+     */
     public int getUserID() {
         return userID;
     }
 
-    public int getContactID() {
-        return contactID;
+    /**
+     * getTitle. Gets the appt. title.
+     * @return title
+     */
+    public String getTitle() {
+        return title;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    /**
+     * getDescription. Get appt. description.
+     * @return description
+     */
+    public String getDescription() {
+        return description;
     }
 
+    /**
+     * getLocation. Gets the appt. location.
+     * @return location
+     */
+    public String getLocation() {
+        return location;
+    }
+
+    /**
+     * getType. Gets the appt. type.
+     * @return type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * getStart. Gets the appt. start details. Date and time.
+     * @return start
+     */
+    public String getStart() {
+        return start;
+    }
+
+    /**
+     * getEnd. Gets the appt. end detals. Date and time.
+     * @return end
+     */
+    public String getEnd() {
+        return end;
+    }
+
+    /**
+     * getContact. Gets the appt. contact.
+     * @return contact
+     */
     public String getContact() {
         return contact;
     }
 
+    /**
+     * setContact. Sets the appt. Contact.
+     * @param contact
+     */
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    // Unused setters
+    public void setAppointmentID(int appointmentID) {
+        this.appointmentID = appointmentID;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public void setEnd(String end) {
+        this.end = end;
+    }
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
+    }
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+    public void setContactID(int contactID) {
+        this.contactID = contactID;
+    }
+
+    // Unused getters
+    public int getContactID() {
+        return contactID;
+    }
     public int getApptCount() {
         return apptCount;
     }
-
-
 }

@@ -1,13 +1,7 @@
 package DBClientApp.controller;
 
-import DBClientApp.DAO.AppointmentData;
-import DBClientApp.DAO.CustomerData;
 import DBClientApp.DAO.UserData;
-import DBClientApp.model.Appointment;
-import DBClientApp.model.Customer;
 import DBClientApp.model.User;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,8 +16,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-import java.awt.event.FocusEvent;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,86 +23,111 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
+
+/**
+ * LoginController class. This class handles the logic for the Login page.
+ */
 public class LoginController implements Initializable {
 
+    // LoginController Attributes
     Stage stage;
     Scene scene;
-
-    // For upcoming appointment alerts
     private static String userName;
     private String passWord;
-    public static String getUserName() {
-        return userName;
-    }
 
     @FXML private Pane loginPane;
-
-    @FXML private Label headerLabel;
-
     @FXML private Button loginClearBtn;
-
+    @FXML private Button loginSubmitBtn;
+    @FXML private Label headerLabel;
     @FXML private Label loginNameLbl;
-
     @FXML private Label loginPasswordLbl;
-
+    @FXML private Label loginTimeLbl;
+    @FXML private Label loginTimeReadout;
+    @FXML private TextField loginUserTxt;
     @FXML private TextField loginPasswordTxt;
 
-    @FXML private Button loginSubmitBtn;
-
-    @FXML private Label loginTimeLbl;
-
-    @FXML private Label loginTimeReadout;
-
-    @FXML private TextField loginUserTxt;
-
+    /**
+     * onMouseMoved. This event calls validateForm when a user moves their mouse. For ease of submit button enabled.
+      * @param event
+     */
     @FXML void onMouseMoved(MouseEvent event) {validateForm();}
 
+    /**
+     * onKeyPressed. This event allows the call to validateForm when a user tabs through the fields.
+     * @param event
+     */
     @FXML void onKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.TAB) {
             validateForm();
         }
     }
 
+    /**
+     * onMouseClicked. This event requests the mouse focus when  user clicks out of a text field. Added for visual assurance.
+     * @param event
+     */
     @FXML void onMouseClicked(MouseEvent event) {
         loginPane.requestFocus();
         validateForm();
     }
 
-    @FXML
-    void loginClearClick(ActionEvent event) {
+    /**
+     * loginClearClick. This method clears the text fields.
+     * @param event
+     */
+    @FXML void loginClearClick(ActionEvent event) {
         loginPasswordTxt.clear();
         loginUserTxt.clear();
         validateForm();
     }
 
-    @FXML
-    void loginPasswordTxtSearch(ActionEvent event) {
+    /**
+     * getUserName. This method is used to return the username for login purposes.
+     * @return userName
+     */
+    public static String getUserName() {
+        return userName;
+    }
+
+    /**
+     * loginPasswordTxtSearch. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void loginPasswordTxtSearch(ActionEvent event) {
         validateForm();
     }
 
-    @FXML
-    void loginUserTxtSearch(ActionEvent event) {
+    /**
+     * loginUserTxtSearch. This event calls the validateForm method to ensure input is valid.
+     * @param event
+     */
+    @FXML void loginUserTxtSearch(ActionEvent event) {
         validateForm();
     }
 
-    @FXML
-    void loginSubmitClick(ActionEvent event) throws IOException {
+    /**
+     * loginSubimtClick. This method calls to the database to compare the entered username and password to those in the table.
+     * The method also uses a filewriter to log submission attempts.
+     * @param event
+     * @throws IOException
+     */
+    @FXML void loginSubmitClick(ActionEvent event) throws IOException {
         ResourceBundle rb = ResourceBundle.getBundle("DBClientApp.language.Language", Locale.getDefault());
         userName = loginUserTxt.getText();
         passWord = loginPasswordTxt.getText();
         User thisUser = UserData.getThisUser(userName);
 
-
+        // Time data for Login Activity details
         Timestamp loginTime = Timestamp.valueOf(LocalDateTime.now());
         SimpleDateFormat loginFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         loginFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         String activityLogin = loginFormat.format(loginTime);
 
+        // Login Activity file creation
         FileWriter fw = new FileWriter("login_activity.txt", true);
         PrintWriter pw = new PrintWriter(fw);
 
@@ -143,6 +160,9 @@ public class LoginController implements Initializable {
         pw.close();
     }
 
+    /**
+     * validateForm. This method is used to make sure username and password are entered before being able to submit.
+      */
     private void validateForm() {
         boolean formValidated = true;
         if (loginUserTxt.getText().isEmpty() ||
@@ -154,6 +174,11 @@ public class LoginController implements Initializable {
         loginSubmitBtn.setDisable(!formValidated);
     }
 
+    /**
+     * initialize. This method initializes the login page and displays the text per the system language.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Login Controller Launched");

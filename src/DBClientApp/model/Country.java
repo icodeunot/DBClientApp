@@ -1,77 +1,52 @@
 package DBClientApp.model;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-
+/**
+ * Country class. This class provides everything needed for a Country object.
+ */
 public class Country {
+
+    // Country Attributes
     private int countryID;
     private String countryName;
-    private Date createDate;
-    private String createdBy;
-    private Timestamp lastUpdate;
-    private String lastUpdatedBy;
 
-    public Country(int countryID, String countryName, Date createDate, String createdBy, Timestamp lastUpdate, String lastUpdatedBy) {
-        this.countryID = countryID;
-        this.countryName = countryName;
-        this.createDate = createDate;
-        this.createdBy = createdBy;
-        this.lastUpdate = lastUpdate;
-        this.lastUpdatedBy = lastUpdatedBy;
-    }
-
+    /**
+     * Country constructor. Builds the country object when called.
+      * @param countryName
+     * @param countryID
+     */
     public Country(String countryName, int countryID) {
         this.countryName = countryName;
         this.countryID = countryID;
     }
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
+    /**
+     * toString. Overridden method to provide string value for combo box setting. Otherwise returns memory location.
+      * @return countryName
+     */
+    @Override
+    public String toString() {
+        return countryName;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setLastUpdate(Timestamp lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    public void setLastUpdatedBy(String lastUpdatedBy) {
-        this.lastUpdatedBy = lastUpdatedBy;
-    }
-
+    /**
+     * getCountryID. gets countryID.
+      * @return countryID
+     */
     public int getCountryID() {
         return countryID;
     }
 
+    /**
+     * getCountryName. gets countryName.
+     * @return countryName
+     */
     public String getCountryName() {
         return countryName;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public Timestamp getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public String getLastUpdatedBy() {
-        return lastUpdatedBy;
-    }
-
-    @Override
-    public String toString() {
-        return countryName;
+    // Unused Setters
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 }
 

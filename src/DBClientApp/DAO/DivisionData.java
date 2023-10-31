@@ -1,18 +1,24 @@
 package DBClientApp.DAO;
 
-import DBClientApp.controller.AddCustomerController;
 import DBClientApp.helper.JDBC;
-import DBClientApp.model.Country;
 import DBClientApp.model.FirstLevelDivision;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+/**
+ * DivisionData class. This class handles the First Level Division needs from the database.
+ */
 public class DivisionData {
 
+    /**
+     * getTheseDivisions. Join country and first level division to assign divisions to a chosen country.
+     * @param countryID
+     * @return divisionListDAO
+     */
     public static ObservableList<FirstLevelDivision> getTheseDivisions(int countryID) {
         ObservableList<FirstLevelDivision> divisionListDAO = FXCollections.observableArrayList();
 
@@ -39,6 +45,10 @@ public class DivisionData {
         return divisionListDAO;
     }
 
+    /**
+     * getDivisions. This method gets all of the divisions from the table.
+      * @return divisionListDAO
+     */
     public static ObservableList<FirstLevelDivision> getDivisions() {
         ObservableList<FirstLevelDivision> divisionListDAO = FXCollections.observableArrayList();
 
@@ -62,6 +72,11 @@ public class DivisionData {
         return divisionListDAO;
     }
 
+    /**
+     * getDivisionID. This method uses the division name to return the division id.
+      * @param divisionName
+     * @return divisionID
+     */
     public static int getDivisionID(String divisionName) {
 
         int divisionID = 0;
@@ -84,6 +99,11 @@ public class DivisionData {
         return divisionID;
     }
 
+    /**
+     * getDivisionName. This method uses the division id to get the division name.
+      * @param divisionID
+     * @return divisionName
+     */
     public static String getDivisionName(int divisionID) {
         String divisionName = null;
         try {

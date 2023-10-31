@@ -1,81 +1,70 @@
 package DBClientApp.model;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-
+/**
+ * User class. This class is the basic model for the user object.
+ */
 public class User {
+
+    // User Attributes
     private int userID;
     private String userName;
     private String password;
-    private Date createDate;
-    private String createdBy;
-    private Timestamp lastUpdate;
-    private String lastUpdatedBy;
 
+    /**
+     * User constructor. Used in most cases throughout the program.
+     * @param userName
+     * @param userID
+     */
     public User(String userName, int userID) {
         this.userID = userID;
         this.userName = userName;
     }
 
+    /**
+     * User constructor. Used for the login only to grab the password.
+     * @param userName
+     * @param userID
+     * @param password
+     */
     public User(String userName, int userID, String password) {
         this.userID = userID;
         this.userName = userName;
         this.password = password;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setLastUpdate(Timestamp lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    public void setLastUpdatedBy(String lastUpdatedBy) {
-        this.lastUpdatedBy = lastUpdatedBy;
-    }
-
+    /**
+     * getUserID. gets the user ID.
+     * @return userID
+     */
     public int getUserID() {
         return userID;
     }
 
+    /**
+     * getUserName. gets the username
+     * @return userName
+     */
     public String getUserName() {
         return userName;
     }
 
+    /**
+     * getPassword. Gets the user password.
+     * @return password
+     */
     public String getPassword() {
         return password;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    // Unused Code
+    // Unused setters
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
-
-    public String getCreatedBy() {
-        return createdBy;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
-
-    public Timestamp getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public String getLastUpdatedBy() {
-        return lastUpdatedBy;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

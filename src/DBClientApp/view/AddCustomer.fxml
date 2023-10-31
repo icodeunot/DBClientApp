@@ -13,108 +13,112 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="addCustPane" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DBClientApp.controller.AddCustomerController" onMouseClicked="#onMouseClicked">
-   <children>
-      <Pane focusTraversable="true" layoutX="220.0" layoutY="122.0" prefHeight="355.0" prefWidth="460.0" style="-fx-border-color: black; -fx-border-radius: 2%;">
-         <children>
-            <GridPane layoutY="41.0" prefHeight="270.0" prefWidth="450.0">
-               <columnConstraints>
-                  <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <Label text="ID">
-                     <GridPane.margin>
-                        <Insets left="25.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label text="Name" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets left="25.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label text="Address" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets left="25.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label prefHeight="18.0" prefWidth="102.0" text="Phone Number" GridPane.rowIndex="3">
-                     <GridPane.margin>
-                        <Insets left="25.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label text="Country" GridPane.rowIndex="4">
-                     <GridPane.margin>
-                        <Insets left="25.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label fx:id="divisionLabel" text="Prov. | State | Terr." GridPane.rowIndex="5">
-                     <GridPane.margin>
-                        <Insets left="25.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <TextField fx:id="addCustIDTxt" disable="true" onAction="#addCustIDClick" prefWidth="250.0" promptText="Auto Generated - Disabled" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="addCustNameTxt" onAction="#addCustNameClick" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="addCustAddressTxt" onAction="#addCustAddressClick" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="addCustPhoneTxt" onAction="#addCustPhoneClick" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                     <GridPane.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <ComboBox fx:id="addCustCountryCombo" onAction="#addCustCountryClick" prefWidth="250.0" promptText="Select Please..." GridPane.columnIndex="1" GridPane.rowIndex="4">
-                     <GridPane.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </GridPane.margin>
-                  </ComboBox>
-                  <ComboBox fx:id="addCustDivisionCombo" layoutX="184.0" layoutY="207.0" onAction="#addCustDivisionClick" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <Label layoutX="45.0" layoutY="210.0" text="Postal Code" GridPane.rowIndex="6">
-                     <GridPane.margin>
-                        <Insets left="25.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <TextField fx:id="addCustPostalCodeTxt" onAction="#addCustPostalCodeClick" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                     <GridPane.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </GridPane.margin>
-                  </TextField>
-               </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-            </GridPane>
-            <Label layoutX="15.0" layoutY="10.0" text="Add Customer">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <HBox alignment="CENTER" layoutX="75.0" layoutY="311.0" prefHeight="35.0" prefWidth="300.0" spacing="20.0">
-               <children>
-                  <Button fx:id="addCustCancelBtn" mnemonicParsing="false" onAction="#addCustCancelClick" prefWidth="100.0" text="Cancel" />
-                  <Button fx:id="addCustSaveBtn" mnemonicParsing="false" onAction="#addCustSaveClick" prefWidth="100.0" text="Save" />
-               </children>
-            </HBox>
-         </children>
-      </Pane>
-   </children>
+<AnchorPane fx:id="addCustPane" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="DBClientApp.controller.AddCustomerController"
+            onMouseClicked="#onMouseClicked">
+   <Pane focusTraversable="true" layoutX="220.0" layoutY="122.0" prefHeight="355.0" prefWidth="460.0"
+         style="-fx-border-color: black; -fx-border-radius: 2%;">
+      <GridPane layoutY="41.0" prefHeight="270.0" prefWidth="450.0">
+         <columnConstraints>
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" minWidth="10.0" prefWidth="150.0"/>
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0"/>
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+         </rowConstraints>
+         <padding>
+            <Insets left="10.0" right="10.0"/>
+         </padding>
+         <Label text="ID">
+            <GridPane.margin>
+               <Insets left="25.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label text="Name" GridPane.rowIndex="1">
+            <GridPane.margin>
+               <Insets left="25.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label text="Address" GridPane.rowIndex="2">
+            <GridPane.margin>
+               <Insets left="25.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label prefHeight="18.0" prefWidth="102.0" text="Phone Number" GridPane.rowIndex="3">
+            <GridPane.margin>
+               <Insets left="25.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label text="Country" GridPane.rowIndex="4">
+            <GridPane.margin>
+               <Insets left="25.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label fx:id="divisionLabel" text="Prov. | State | Terr." GridPane.rowIndex="5">
+            <GridPane.margin>
+               <Insets left="25.0"/>
+            </GridPane.margin>
+         </Label>
+         <TextField fx:id="addCustIDTxt" disable="true" onAction="#addCustIDClick" prefWidth="250.0"
+                    promptText="Auto Generated - Disabled" GridPane.columnIndex="1">
+            <GridPane.margin>
+               <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+         </TextField>
+         <TextField fx:id="addCustNameTxt" onAction="#addCustNameClick" prefWidth="250.0" GridPane.columnIndex="1"
+                    GridPane.rowIndex="1">
+            <GridPane.margin>
+               <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+         </TextField>
+         <TextField fx:id="addCustAddressTxt" onAction="#addCustAddressClick" prefWidth="250.0"
+                    GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <GridPane.margin>
+               <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+         </TextField>
+         <TextField fx:id="addCustPhoneTxt" onAction="#addCustPhoneClick" prefWidth="250.0"
+                    GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <GridPane.margin>
+               <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+         </TextField>
+         <ComboBox fx:id="addCustCountryCombo" onAction="#addCustCountryClick" prefWidth="250.0"
+                   promptText="Select Please..." GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <GridPane.margin>
+               <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+         </ComboBox>
+         <ComboBox fx:id="addCustDivisionCombo" layoutX="184.0" layoutY="207.0" onAction="#addCustDivisionClick"
+                   prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+         <Label layoutX="45.0" layoutY="210.0" text="Postal Code" GridPane.rowIndex="6">
+            <GridPane.margin>
+               <Insets left="25.0"/>
+            </GridPane.margin>
+         </Label>
+         <TextField fx:id="addCustPostalCodeTxt" onAction="#addCustPostalCodeClick" prefWidth="250.0"
+                    GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <GridPane.margin>
+               <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+         </TextField>
+      </GridPane>
+      <Label layoutX="15.0" layoutY="10.0" text="Add Customer">
+         <font>
+            <Font name="System Bold" size="14.0"/>
+         </font>
+      </Label>
+      <HBox alignment="CENTER" layoutX="75.0" layoutY="311.0" prefHeight="35.0" prefWidth="300.0" spacing="20.0">
+         <Button fx:id="addCustCancelBtn" mnemonicParsing="false" onAction="#addCustCancelClick" prefWidth="100.0"
+                 text="Cancel"/>
+         <Button fx:id="addCustSaveBtn" mnemonicParsing="false" onAction="#addCustSaveClick" prefWidth="100.0"
+                 text="Save"/>
+      </HBox>
+   </Pane>
 </AnchorPane>

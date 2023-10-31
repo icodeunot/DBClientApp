@@ -14,12 +14,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -27,21 +28,25 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+
+/**
+ * UpdateAppointmentController class. This class handles the logic behind updating a customer. Methods of note are validateForm(),
+ * and the time instance sections. I would like to eventually turn that into a class for cleaner controllers.
+ */
 public class UpdateAppointmentController implements Initializable {
 
+    // UpdateAppointmentController variables
     Stage stage;
     Scene scene;
+    // Appointment object from the main menu selection
     static Appointment chosenAppointment;
+    // Contact object
     static Contact thisContact;
 
-    // Get system timezone
+    // Time variables
     ZoneId userTime = ZoneId.systemDefault();
-    // Get the times converted for combobox insertion
-    // Start
     ZonedDateTime est2systemStart = ZonedDateTime.of(LocalDate.now(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
     ZonedDateTime myHourStart = est2systemStart.withZoneSameInstant(userTime);
-
-    // Time block to handle cases where an appointment begins today.
     public int startMinute() {
         int minute = LocalTime.now().getMinute();
         minute = (minute >= 0 && minute <= 59) ? minute : 0;
@@ -53,52 +58,64 @@ public class UpdateAppointmentController implements Initializable {
     int hour = LocalTime.now().getHour();
     ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMinute()), ZoneId.of(String.valueOf(userTime)));
     ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
-
-    // End
     ZonedDateTime est2systemEnd = ZonedDateTime.of(LocalDate.now(), LocalTime.of(22, 0), ZoneId.of("America/New_York"));
     ZonedDateTime myHourEnd = est2systemEnd.withZoneSameInstant(userTime);
 
+    @FXML private Pane updateApptPane;
+    @FXML private Button updateApptCancelBtn;
+    @FXML private Button updateApptSaveBtn;
+    @FXML private ComboBox<Contact> updateApptContactCombo;
+    @FXML private ComboBox<Integer> updateApptCustIDCombo;
+    @FXML private ComboBox<Integer> updateApptUserIDCombo;
+    @FXML private ComboBox<LocalTime> updateApptETimeCombo;
+    @FXML private ComboBox<LocalTime> updateApptSTimeCombo;
+    @FXML private DatePicker updateApptEDateCal;
+    @FXML private DatePicker updateApptSDateCal;
+    @FXML private TextField updateApptApptIDTxt;
+    @FXML private TextField updateApptDescriptionTxt;
+    @FXML private TextField updateApptLocationTxt;
+    @FXML private TextField updateApptTitleTxt;
+    @FXML private TextField updateApptTypeTxt;
 
-    @FXML
-    private Pane updateApptPane;
-    @FXML
-    private TextField updateApptApptIDTxt;
-    @FXML
-    private Button updateApptCancelBtn;
-    @FXML
-    private ComboBox<Contact> updateApptContactCombo;
-    @FXML
-    private ComboBox<Integer> updateApptCustIDCombo;
-    @FXML
-    private TextField updateApptDescriptionTxt;
-    @FXML
-    private DatePicker updateApptEDateCal;
-    @FXML
-    private ComboBox<LocalTime> updateApptETimeCombo;
-    @FXML
-    private TextField updateApptLocationTxt;
-    @FXML
-    private DatePicker updateApptSDateCal;
-    @FXML
-    private ComboBox<LocalTime> updateApptSTimeCombo;
-    @FXML
-    private Button updateApptSaveBtn;
-    @FXML
-    private TextField updateApptTitleTxt;
-    @FXML
-    private TextField updateApptTypeTxt;
-    @FXML
-    private ComboBox<Integer> updateApptUserIDCombo;
-    @FXML
-    void onMouseClicked(MouseEvent event) {
+    /**
+     * onMouseClicked. This event requests focus of the mouse any time a user clicks out of the field. Mainly used for visual assuredness for the user.
+      * @param event
+     */
+    @FXML void onMouseClicked(MouseEvent event) {
         updateApptPane.requestFocus();
     }
-    @FXML
-    void updateApptApptIDClick(ActionEvent event) {
+
+    /**
+     * onMouseMoved. This event will call validateForm() anytime the user moves the mouse. This allows the save button
+     * to become enabled with changes.
+     * @param event
+     */
+    @FXML void onMouseMoved(MouseEvent event) {validateForm();}
+
+    /**
+     * onKeyPressed. This event allows the validateForm call when a user tabs through the form.
+     * @param event
+     */
+    @FXML void onKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.TAB) {
+            validateForm();
+        }
+    }
+
+    /**
+     * updateApptIDCLick. This event calls the validateForm() method to assure data input.
+     * @param event
+     */
+    @FXML void updateApptApptIDClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void updateApptCancelClick(ActionEvent event) throws IOException {
+
+    /**
+     * updateApptCancelClick. This event sends the user back to the Main Menu.
+     * @param event
+     * @throws IOException
+     */
+    @FXML void updateApptCancelClick(ActionEvent event) throws IOException {
         alert(8);
         stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
         scene = new Scene(FXMLLoader.load(getClass().getResource("/DBClientApp/view/Menu.fxml")));
@@ -107,20 +124,38 @@ public class UpdateAppointmentController implements Initializable {
         stage.centerOnScreen();
         stage.show();
     }
-    @FXML
-    void updateApptContactClick(ActionEvent event) {
+
+    /**
+     * updateApptContactClick. This event calls the validateForm() method to assure data input.
+     * @param event
+     */
+    @FXML void updateApptContactClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void updateApptCustIDClick(ActionEvent event) {
+
+    /**
+     * updateApptCustIDClick. This event calls the validateForm() method to assure data input.
+     * @param event
+     */
+    @FXML void updateApptCustIDClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void updateApptDescriptionClick(ActionEvent event) {
+
+    /**
+     * updateApptDescriptionClick. This event calls the validateForm() method to assure data input.
+     * @param event
+     */
+    @FXML void updateApptDescriptionClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void updateApptEDateClick(ActionEvent event) {
+
+    /**
+     * updateApptEDateClick. The action verifies the logic behind setting an end date, and sets the times for the end time combo box.
+     * If the end date is on the same day as the start day, the end times will reflect 5 minutes after the start time through to closing.
+     * Otherwise, they will be available for all business hours.
+     * @param event
+     */
+    @FXML void updateApptEDateClick(ActionEvent event) {
         // get this method's instance of the conversion.
         int minute = LocalTime.now().getMinute();
         if (minute == 0) {
@@ -196,8 +231,12 @@ public class UpdateAppointmentController implements Initializable {
         }
         validateForm();
     }
-    @FXML
-    void updateApptETimeClick(ActionEvent event) {
+
+    /**
+     * updateApptETimeClick. This event verifies a logical end time and sets it.
+     * @param event
+     */
+    @FXML void updateApptETimeClick(ActionEvent event) {
         if (updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue() != null && updateApptSDateCal.getValue().equals(updateApptEDateCal.getValue())) {
             if (updateApptSTimeCombo.getSelectionModel().getSelectedItem() != null) {
                 LocalTime endStart = updateApptSTimeCombo.getSelectionModel().getSelectedItem().plusMinutes(5);
@@ -216,12 +255,24 @@ public class UpdateAppointmentController implements Initializable {
         }
         validateForm();
     }
-    @FXML
-    void updateApptLocationClick(ActionEvent event) {
+
+    /**
+     * updateApptLocationCLick. This event calls the validateForm() method to assure data input.
+     * @param event
+     */
+    @FXML void updateApptLocationClick(ActionEvent event) {
         validateForm();
     }
-    @FXML
-    void updateApptSDateClick(ActionEvent event) {
+
+    /**
+     * updateApptSDateClick. This event handles the logic behind picking a start date, and alerts on unaccessible dates.
+     * The event sets the times in the combobox according to the start date. If the start date is on the current day,
+     * only start times from then on are available.
+     * When adding an appointment, an appointment that spans days is not allowed.
+     * However, I built the update controller to allow for end date change, due to possible testing.
+     * @param event
+     */
+    @FXML void updateApptSDateClick(ActionEvent event) {
         // get this method's instance of the conversion.
         int minute = LocalTime.now().getMinute();
         minute = (minute >= 0 && minute <= 59) ? minute : 0;
@@ -285,8 +336,15 @@ public class UpdateAppointmentController implements Initializable {
         }
         validateForm();
     }
-    @FXML
-    void updateApptSTimeClick(ActionEvent event) {
+
+    /**
+     * updateApptSTimeClick This event adjusts for the current time if an appointment is chosen today, and alerts if closed.
+     * The method allows all business hours on any business day in the future.
+     * The method then sets the end time combobox with options that start 5 minutes after the start time.
+     * The last available start time is always 5 minutes prior to closing, to allow for a closing time end of meeting.
+     * @param event
+     */
+    @FXML void updateApptSTimeClick(ActionEvent event) {
         if (updateApptSDateCal.getValue() != null && updateApptEDateCal.getValue() != null && updateApptSDateCal.getValue().equals(updateApptEDateCal.getValue())) {
             // updateApptSTimeCombo.getItems().clear();
             if (updateApptSTimeCombo.getSelectionModel().getSelectedItem() != null) {
@@ -308,15 +366,23 @@ public class UpdateAppointmentController implements Initializable {
         }
         validateForm();
     }
-    @FXML
-    void updateApptSaveClick(ActionEvent event) {
-        ObservableList<Appointment> apptList = AppointmentData.getAllApps();
+
+    /**
+     * updateApptSaveClick. This method uses logic to assure dates and times are properly input and won't overlap.
+     * The method verifies all data is input and cannot be enabled until the validateForm() call has returned true.
+     * The method then uses the AppointmentData class to modify the appointment data.
+     * On error the method alerts and returns to the form.
+     * @param event
+     */
+    @FXML void updateApptSaveClick(ActionEvent event) {
+
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String thisStart = updateApptSDateCal.getValue() + " " + updateApptSTimeCombo.getSelectionModel().getSelectedItem();
         String thisEnd = updateApptEDateCal.getValue() + " " + updateApptETimeCombo.getSelectionModel().getSelectedItem();
         LocalDateTime thisStartDateTime = LocalDateTime.parse(thisStart, dateFormat);
         LocalDateTime thisEndDateTime = LocalDateTime.parse(thisEnd, dateFormat);
 
+        ObservableList<Appointment> apptList = AppointmentData.getAllApps();
         ObservableList<Appointment> customerAppts = FXCollections.observableArrayList();
         for (Appointment a : apptList) {
             if (a.getCustomerID() == updateApptCustIDCombo.getSelectionModel().getSelectedItem()) {
@@ -325,19 +391,19 @@ public class UpdateAppointmentController implements Initializable {
             for (Appointment appt : customerAppts) {
                 LocalDateTime custStarts = LocalDateTime.parse(appt.getStart(), dateFormat);
                 LocalDateTime custEnds = LocalDateTime.parse(appt.getEnd(), dateFormat);
-                if (thisStartDateTime.equals(custStarts)) {
+                if (thisStartDateTime.equals(custStarts) && (chosenAppointment.getAppointmentID() != appt.getAppointmentID())) {
                     alert(9);
                     return;
                 }
-                else if (thisStartDateTime.isAfter(custStarts) && thisStartDateTime.isBefore(custEnds)) {
+                else if (thisStartDateTime.isAfter(custStarts) && thisStartDateTime.isBefore(custEnds) && (chosenAppointment.getAppointmentID() != appt.getAppointmentID())) {
                     alert(9);
                     return;
                 }
-                else if (thisStartDateTime.isBefore(custStarts) && thisEndDateTime.isAfter(custStarts)) {
+                else if (thisStartDateTime.isBefore(custStarts) && thisEndDateTime.isAfter(custStarts) && (chosenAppointment.getAppointmentID() != appt.getAppointmentID())) {
                     alert(9);
                     return;
                 }
-                else if (thisStartDateTime.isAfter(custStarts) && thisEndDateTime.isBefore(custEnds)) {
+                else if (thisStartDateTime.isAfter(custStarts) && thisEndDateTime.isBefore(custEnds) && (chosenAppointment.getAppointmentID() != appt.getAppointmentID())) {
                     alert(9);
                     return;
                 }
@@ -377,19 +443,35 @@ public class UpdateAppointmentController implements Initializable {
             e.printStackTrace();
         }
     }
-    @FXML
-    void updateApptTitleClick(ActionEvent event) {
-        validateForm();
-    }
-    @FXML
-    void updateApptTypeClick(ActionEvent event) {
-        validateForm();
-    }
-    @FXML
-    void updateApptUserIDClick(ActionEvent event) {
+
+    /**
+     * updateApptTitleClick. This event calls the validateForm() method to assure data input.
+     * @param event
+     */
+    @FXML void updateApptTitleClick(ActionEvent event) {
         validateForm();
     }
 
+    /**
+     * updateApptTypeClick. This event calls the validateForm() method to assure data input.
+     * @param event
+     */
+    @FXML void updateApptTypeClick(ActionEvent event) {
+        validateForm();
+    }
+
+    /**
+     * updateApptUserIDClick. This event calls the validateForm() method to assure data input.
+     * @param event
+     */
+    @FXML void updateApptUserIDClick(ActionEvent event) {
+        validateForm();
+    }
+
+    /**
+     * alert. This method is used to communicate various errors and information to the user.
+      * @param alertNum
+     */
     private void alert(int alertNum) {
         switch (alertNum) {
             case 1 -> {
@@ -462,6 +544,10 @@ public class UpdateAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * validateForm. This method is used to make sure all fields have been filled out and the date logic is sound.
+     * The save button cannot be clicked unless this method returns true.
+     */
     private void validateForm() {
         boolean formValidated = true;
         if (updateApptTitleTxt.getText().isEmpty() ||
@@ -486,17 +572,30 @@ public class UpdateAppointmentController implements Initializable {
         updateApptSaveBtn.setDisable(!formValidated);
     }
 
+    /**
+     * initialize. This method handles the logic of bringing in the data from the Main Menu, and applies it to the fields on the form.
+     * An instance of the current time was needed in order to set various logic checks, that rely on each other if another is chosen.
+     * For example, the times could not be chosen independently within the logic I used to fill the combo boxes.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         updateApptSaveBtn.setDisable(true);
         System.out.println("Update Appointment Controller Launched");
+
+        /////////////////////////////////
         // Data the controller will need
+        /////////////////////////////////
+
         // Get system timezone
         ZoneId userTime = ZoneId.systemDefault();
+
         // Get the times converted for combobox insertion
         // Start
         ZonedDateTime est2systemStart = ZonedDateTime.of(LocalDate.now(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
         ZonedDateTime myHourStart = est2systemStart.withZoneSameInstant(userTime);
+
         // Time block to handle cases where an appointment begins today.
         int minute = LocalTime.now().getMinute();
         minute = (minute >= 0 && minute <= 59) ? minute : 0;
@@ -506,10 +605,14 @@ public class UpdateAppointmentController implements Initializable {
         startMin = (startMin >= 0 && startMin <= 59) ? startMin : 0;
         ZonedDateTime todayStartConversion = ZonedDateTime.of(LocalDate.now(), LocalTime.of(hour, startMin), ZoneId.of(String.valueOf(userTime)));
         ZonedDateTime todayHourStart = todayStartConversion.withZoneSameInstant(userTime);
-        // End
+
+        //End
         ZonedDateTime est2systemEnd = ZonedDateTime.of(LocalDate.now(), LocalTime.of(22, 0), ZoneId.of("America/New_York"));
         ZonedDateTime myHourEnd = est2systemEnd.withZoneSameInstant(userTime);
+
+        // Appointment object from the Main Menu
         chosenAppointment = MenuController.chooseYourAppointment();
+
         // Contact Names
         ObservableList<Contact> contacts = ContactData.getContact();
         for (Contact c : contacts) {
@@ -517,6 +620,7 @@ public class UpdateAppointmentController implements Initializable {
                 thisContact = c;
             }
         }
+
         // Customer IDs
         ObservableList<Customer> customers = CustomerData.getAllCusts();
         ObservableList<Integer> customerIDs = FXCollections.observableArrayList();
@@ -524,6 +628,7 @@ public class UpdateAppointmentController implements Initializable {
             int custID = c.getCustomerID();
             customerIDs.add(custID);
         }
+
         // User IDs
         ObservableList<User> users = UserData.getUsers();
         ObservableList<Integer> userIDs = FXCollections.observableArrayList();
@@ -531,6 +636,7 @@ public class UpdateAppointmentController implements Initializable {
             int userID = u.getUserID();
             userIDs.add(userID);
         }
+
         // get date and time ready for initial pull from appointment data
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime startInfo = LocalDateTime.parse(chosenAppointment.getStart(), dateFormat);
@@ -539,6 +645,7 @@ public class UpdateAppointmentController implements Initializable {
         LocalDateTime endInfo = LocalDateTime.parse(chosenAppointment.getEnd(), dateFormat);
         LocalDate endDate = endInfo.toLocalDate();
         LocalTime endTime = endInfo.toLocalTime();
+
         // Start Time Combo Box
         if (startDate.equals(LocalDate.now())) {
             if (todayHourStart.isAfter(myHourEnd)) {
@@ -604,6 +711,7 @@ public class UpdateAppointmentController implements Initializable {
                 endStart = endStart.plusMinutes(5);
             }
         }
+
         // assign text values
         updateApptApptIDTxt.setText(String.valueOf(chosenAppointment.getAppointmentID()));
         updateApptTitleTxt.setText(chosenAppointment.getTitle());
@@ -615,6 +723,7 @@ public class UpdateAppointmentController implements Initializable {
         updateApptEDateCal.setValue(endDate);
         updateApptSTimeCombo.setValue(startTime);
         updateApptETimeCombo.setValue(endTime);
+
         // Create lists: Contacts, Customers, Users - assign original appt values.
         updateApptContactCombo.setItems(contacts);
         updateApptContactCombo.setValue(thisContact);
@@ -622,6 +731,7 @@ public class UpdateAppointmentController implements Initializable {
         updateApptCustIDCombo.setValue(chosenAppointment.getCustomerID());
         updateApptUserIDCombo.setItems(userIDs);
         updateApptUserIDCombo.setValue(chosenAppointment.getUserID());
+
         // Check to see if the appointment has details that have already passed
         if ((startDate.isBefore(LocalDate.now()) || (startDate.equals(LocalDate.now()) && (startTime.isBefore(LocalTime.from(todayHourStart)) || startTime.isAfter(LocalTime.from(myHourEnd))))
         || startDate.isAfter(endDate)) || (startDate.equals(endDate) && startTime.isAfter(updateApptETimeCombo.getSelectionModel().getSelectedItem()))) {
