@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"DBClientApp"},{"l":"DBClientApp.controller"},{"l":"DBClientApp.DAO"},{"l":"DBClientApp.helper"},{"l":"DBClientApp.model"}];updateSearchResults();
